@@ -18,8 +18,8 @@ int main()  {
 		FD_SET(socket1.getSock(), &readFds);
 		for(int i = 0; i < client_fd.size(); ++i){
 			FD_SET(client_fd[i], &readFds);
-			if ()
-				FD_SET(client_fd[i], &writeFds);
+//			if ()
+//				FD_SET(client_fd[i], &writeFds);
 			if (client_fd[i] > max_d)
 				max_d = client_fd[i];
 		}

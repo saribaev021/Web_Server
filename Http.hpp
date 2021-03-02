@@ -14,6 +14,7 @@ enum STATUS{
 	CLOSE,
 	ERROR,
 	READ,
+	PARSER,
 	WRITE,
 	EXECUTE
 };
@@ -24,7 +25,20 @@ private:
 	std::string _head;
 	std::map<std::string,std::string> _headMap;
 	std::string _buffer;
+	size_t _length;
+	std::list<std::string>_tokens;
+	int _error_flag;
+	int _parser_flag;
+	bool _parser_tokens();
+	bool _parser_start_line();
 public:
+	int getParserFlag() const;
+	int getErrorFlag() const;
+	void setErrorFlag(int errorFlag);
+	size_t getLength() const;
+
+	void setLength(size_t length);
+
 	Http();
 	STATUS getStatus() const;
 
@@ -41,7 +55,11 @@ public:
 	const std::string &getBuffer() const;
 
 	void setBuffer(const std::string &buffer);
-	void parser_head();
+	bool parser_head();
+	size_t find(std::string &s1, std::string &s2);
+	void to_upper(std::string &str);
+	void to_lower(std::string &str);
+	void parser();
 };
 
 
