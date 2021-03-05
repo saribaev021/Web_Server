@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/05 18:37:39 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/05 22:44:29 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void ClassParser::read_from_file()
 		exit(1);
 	}
     in.close();     // закрываем файл
-	std::cout << this->line_data << std::endl;
 }
 
 std::vector<std::string> ClassParser::split_servers()
@@ -142,12 +141,41 @@ std::vector<t_locations> split_locations(std::string &str)
 	return loc;
 }
 
-unsigned long set_size(std::string str)
+unsigned long long set_size(std::string str)
 {
 	if (str.empty())
 		return 0;
 	std::string s = my_substr(str.begin() + 14, str.end());
-	return 10;
+	s = ft_trim_spases(s);
+	unsigned long long i = strtoul(s.c_str(), NULL, 10);
+	int n = 0;
+	while (isnumber(s[n]))
+		n++;
+	
+	switch (s[n])
+	{
+	case 'K':
+		if (i > (ULONG_MAX >> 10))
+			i = ULONG_MAX;
+		else 
+			i = i << 10;
+		break;
+	case 'M':
+		if (i > (ULONG_MAX >> 20))
+			i = ULONG_MAX;
+		else 
+			i = i << 20;
+		break;
+	case 'G':
+		if (i > (ULONG_MAX >> 30))
+			i = ULONG_MAX;
+		else 
+			i = i << 30;
+		break;
+	default:
+		break;
+	}
+	return i;
 }
 
 bool set_auto(std::string str)
@@ -163,7 +191,6 @@ bool set_auto(std::string str)
 std::vector<std::string>	split_vector(std::string s, std::string type)
 {
 	std::vector<std::string> split;
-	// std::cout << s << std::endl;
 	if (s.empty())
 		return split;
 	std::string str = my_substr(s.begin() + type.length(), s.end());
@@ -182,7 +209,6 @@ std::vector<std::string>	split_vector(std::string s, std::string type)
 				new_str += *i;
 				i++;
 			}
-			std::cout << type << " - " <<  new_str <<std::endl;
 			split.push_back(new_str);
 		}
 	}
@@ -195,7 +221,6 @@ std::string		split_string(std::string s, std::string type)
 	if (s.empty())
 		return "";
 	std::string str = my_substr(s.begin() + type.length(), s.end());
-	std::cout << type << " - " << str << std::endl;
 	return (str);
 }
 
@@ -214,7 +239,6 @@ std::string		set_port(std::string s)
 	std::string new_port;
 	for(int n = port.length()-1; n >= 0; n--)
     	new_port.push_back(port[n]);
-	std::cout << "port - "<< new_port << std::endl;
 	return (new_port);
 }
 
@@ -229,9 +253,42 @@ std::string set_ip(std::string s)
 		ip+=*i;
 		i++;
 	}
-	std::cout << "ip - "<< ip << std::endl;
 	return  ip;
 }
+
+std::vector<std::string>	set_all_method()
+{
+	std::vector<std::string> a;
+	a.push_back("GET");
+	a.push_back("HEAD");
+	a.push_back("POST");
+	a.push_back("PUT");
+	return a;
+}
+
+bool	check_method_pars(std::vector<std::string> method, std::vector<std::string> all_method)
+{
+	bool a;
+	for (int i = 0; i < method.size(); i++)
+	{
+		a = false;
+		for (int j = 0; j < all_method.size(); j++)
+			if (all_method[j] == method[i])
+				a = true;
+		if (a == false)
+			return false;
+	}
+	return a;
+}
+
+std::string set_loc(std::string s)
+{
+	std::string str;
+	str = my_substr(s.begin(), my_find(s,"{"));
+	str = ft_trim_spases(str);
+	return str;
+}
+
 
 void iset_data(t_server_config_data &s)
 {
@@ -248,8 +305,7 @@ void iset_data(t_server_config_data &s)
 	int j = 0;
 	while (j < s.location.size())
 	{
-		// s.location[j].location = set_string_p(s.location[j].full_loc, "location ");
-		std::cout << "loc # " << j << "\n{" << std::endl;
+		s.location[j].location = set_loc(split_string(s.location[j].location, "location "));
 		if (s.location[j].root.empty())
 			s.location[j].root = s.root;
 		else
@@ -258,14 +314,23 @@ void iset_data(t_server_config_data &s)
 			s.location[j].index_types = s.index_types;
 		else
 			s.location[j].index_types = split_vector(s.location[j].index_types[0], "index ");
-		std::cout << "autoindex - "<< s.location[j].autoindex << std::endl;
-		std::cout << "max_body_size - "<< s.location[j].max_body_size << std::endl;
-		// s.location[j].method = set_vector(s.location[j].full_loc, "method ");
+		s.location[j].all_method = set_all_method();
+		if (s.location[j].method.empty())
+		{
+			std::cout << "no metod" << std::endl;
+			exit(1);
+		}
+		else
+			s.location[j].method = split_vector(s.location[j].method[0], "method ");
+		if (check_method_pars(s.location[j].method, s.location[j].all_method) == false)
+		{
+			std::cout << "unknown method" << std::endl;
+			exit(1);
+		}
 		if (s.location[j].cgi_path.empty())
 			s.location[j].cgi_path = "";
 		else
 			s.location[j].cgi_path = s.location[j].root + '/' + split_string(s.location[j].cgi_path, "cgi_path ");
-// s.location[j].cgi_extensions = set_vector(s.location[j].full_loc, "cgi_extensions ");
 
 		if (!s.location[j].cgi_extensions.empty())
 			s.location[j].cgi_extensions = split_vector(s.location[j].cgi_extensions[0], "cgi_extensions ");
@@ -273,14 +338,9 @@ void iset_data(t_server_config_data &s)
 		if (s.location[j].upload_storage.empty())
 			s.location[j].upload_storage = "";
 		else
-			s.location[j].upload_storage = split_string(s.location[j].upload_storage, "cgi_path ");
-
-		// s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
-		std::cout << "}\n";
+			s.location[j].upload_storage = split_string(s.location[j].upload_storage, "upload_storage ");
 		j++;
 	}
-	// for (int i = 0; i < s.index_types.size(); i++)
-	// 	std::cout << s.index_types[i] << std::endl;
 }
 
 t_server_config_data	pars_data_for_servers(std::string str)
@@ -314,12 +374,10 @@ t_server_config_data	pars_data_for_servers(std::string str)
 
 void	ClassParser::pars_data()
 {
-	std::cout << "___________________________" << std::endl;
 	std::vector<std::string> lines_for_server = split_servers();
 	int j = 0;
 	while (j < lines_for_server.size())
 	{
-		std::cout << "___________________________ server #" << j << std::endl;
 		this->data.push_back(pars_data_for_servers(lines_for_server[j]));
 		j++;
 	}

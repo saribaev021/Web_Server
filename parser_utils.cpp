@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 20:14:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/03 20:18:42 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/05 22:01:58 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,4 +174,31 @@ int found_last_newline(std::string::iterator i, std::string::iterator end)
 		i++;
 	}
 	return num;
+}
+
+std::string	ft_trim_spases(std::string s)
+{
+	std::string str;
+	std::string::iterator i = s.begin();
+	std::string::iterator end = s.end();
+	while (ft_spases_p(*i))
+		i++;
+	end--;
+	while (ft_spases_p(*end))
+		end--;
+	end++;
+	str = my_substr(i, end);
+	return str;
+}
+
+std::string::iterator my_find(std::string &s, std::string des)
+{
+	std::string::iterator i = s.begin();
+	size_t pos = s.find(des);
+	
+	if (pos != std::string::npos)
+		i+=pos;
+	else 
+		i = s.end();
+	return i;
 }
