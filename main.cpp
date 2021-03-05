@@ -6,6 +6,7 @@
 timeval time_out;
 int main()  {
 	Socket socket1("127.0.0.1", "8000");
+//	server_name  = 127.0.0.1:80
 	socket1.listen_socket();
 	std::vector<int>client_fd;
 	volatile int a = 1;
@@ -45,7 +46,11 @@ int main()  {
 			client_fd.push_back(socket1.accept_socket());
 			fcntl(client_fd.back(), F_SETFL, O_NONBLOCK);
 		}
-		for(int i = 0; i < client_fd.size(); ++i){
+//		if (FD_ISSET(socket1.getSock(), &writeFds)) {
+//			newsocket = accept();
+//		}
+
+			for(int i = 0; i < client_fd.size(); ++i){
 			if (FD_ISSET(client_fd[i], &readFds)){
 				std::cout << "S = "<< s<<std::endl;
 				std::cout << "I = "<< i<<std::endl;

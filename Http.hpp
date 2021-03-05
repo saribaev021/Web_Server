@@ -5,36 +5,38 @@
 #ifndef HTTP_HPP
 #define HTTP_HPP
 
-#include <iostream>
-#include <algorithm>
-#include <map>
-#include <vector>
-#include <list>
-enum STATUS{
-	CLOSE,
-	ERROR,
-	READ,
-	PARSER,
-	WRITE,
-	EXECUTE
-};
+#include "Server.hpp"
+
+class RequestParser;
 class Http {
 private:
 	STATUS _status;
 	std::string _body;
 	std::string _head;
 	std::map<std::string,std::string> _headMap;
+	std::map<std::string,std::string> _start_line;
 	std::string _buffer;
 	size_t _length;
-	std::list<std::string>_tokens;
 	int _error_flag;
+public:
+	const std::map<std::string, std::string> &getHeadMap() const;
+
+	void setHeadMap(const std::map<std::string, std::string> &headMap);
+
+	const std::map<std::string, std::string> &getStartLine() const;
+
+	void setStartLine(const std::map<std::string, std::string> &startLine);
+
+	void setParserFlag(int parserFlag);
+
+private:
 	int _parser_flag;
-	bool _parser_tokens();
-	bool _parser_start_line();
 public:
 	int getParserFlag() const;
 	int getErrorFlag() const;
+
 	void setErrorFlag(int errorFlag);
+
 	size_t getLength() const;
 
 	void setLength(size_t length);
@@ -55,11 +57,6 @@ public:
 	const std::string &getBuffer() const;
 
 	void setBuffer(const std::string &buffer);
-	bool parser_head();
-	size_t find(std::string &s1, std::string &s2);
-	void to_upper(std::string &str);
-	void to_lower(std::string &str);
-	void parser();
 };
 
 
