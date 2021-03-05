@@ -5,26 +5,42 @@
 #ifndef HTTP_HPP
 #define HTTP_HPP
 
-#include <iostream>
-#include <algorithm>
-#include <map>
-#include <vector>
-#include <list>
-enum STATUS{
-	CLOSE,
-	ERROR,
-	READ,
-	WRITE,
-	EXECUTE
-};
+#include "Server.hpp"
+
+class RequestParser;
 class Http {
 private:
 	STATUS _status;
 	std::string _body;
 	std::string _head;
 	std::map<std::string,std::string> _headMap;
+	std::map<std::string,std::string> _start_line;
 	std::string _buffer;
+	size_t _length;
+	int _error_flag;
 public:
+	const std::map<std::string, std::string> &getHeadMap() const;
+
+	void setHeadMap(const std::map<std::string, std::string> &headMap);
+
+	const std::map<std::string, std::string> &getStartLine() const;
+
+	void setStartLine(const std::map<std::string, std::string> &startLine);
+
+	void setParserFlag(int parserFlag);
+
+private:
+	int _parser_flag;
+public:
+	int getParserFlag() const;
+	int getErrorFlag() const;
+
+	void setErrorFlag(int errorFlag);
+
+	size_t getLength() const;
+
+	void setLength(size_t length);
+
 	Http();
 	STATUS getStatus() const;
 
@@ -41,7 +57,6 @@ public:
 	const std::string &getBuffer() const;
 
 	void setBuffer(const std::string &buffer);
-	void parser_head();
 };
 
 

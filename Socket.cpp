@@ -72,11 +72,13 @@ void Socket::response(int sock_fd, const std::string &val) {
 	send(sock_fd, val.c_str(), val.length(), 0);
 }
 std::pair<std::string, bool>  Socket::receive(int sock_fd, Http &http) {
-	memset(buf, 0, 2048);
 	int i;
+	char *buf;
+	buf = new char[http.getLength()];
+	i = recv(sock_fd, buf, http.getLength(), 0);
 	std::string str = http.getBuffer();
-	i = recv(sock_fd, buf, 2048, 0);
 	str += buf;
+	delete [] buf;
 	std::cout <<buf<<std::endl;
 	if (i == 0){
 //		close(sock_fd);

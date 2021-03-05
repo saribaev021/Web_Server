@@ -12,8 +12,6 @@
 #include <arpa/inet.h>
 #include "Http.hpp"
 class Socket {
-private:
-	char buf[2048];
 public:
 	Socket();
 	Socket(const std::string &addres, const std::string &port);

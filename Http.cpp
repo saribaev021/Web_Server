@@ -4,7 +4,7 @@
 
 #include "Http.hpp"
 
-Http::Http() : _status(READ), _body(), _head(), _buffer(){}
+Http::Http() : _status(READ), _body(), _head(), _buffer(), _length(500), _headMap(), _start_line(), _error_flag(), _parser_flag(){}
 
 STATUS Http::getStatus() const {
 	return _status;
@@ -38,20 +38,40 @@ const std::string &Http::getBuffer() const {
 void Http::setBuffer(const std::string &buffer) {
 	_buffer = buffer;
 }
-void Http::parser_head() {
 
-	size_t pos = 0;
-	std::list<std::string>tokens;
-	std::string delimiter = "\r\n";
-	while ((pos = _buffer.find(delimiter)) != std::string::npos) {
-		tokens.push_back(_buffer.substr(0, pos));
-		_buffer.erase(0, pos + delimiter.length());
-		if (tokens.back().length() == 0){
-			if (_buffer)
-		}
-	}
-	std::list<std::string>::iterator it = tokens.begin();
-	for (; it != tokens.end(); ++it){
-		std::cout << *it << std::endl;
-	}
+size_t Http::getLength() const {
+	return _length;
+}
+
+void Http::setLength(size_t length) {
+	_length = length;
+}
+
+
+int Http::getParserFlag() const {
+	return _parser_flag;
+}
+
+const std::map<std::string, std::string> &Http::getHeadMap() const {
+	return _headMap;
+}
+
+void Http::setHeadMap(const std::map<std::string, std::string> &headMap) {
+	_headMap = headMap;
+}
+
+const std::map<std::string, std::string> &Http::getStartLine() const {
+	return _start_line;
+}
+
+void Http::setStartLine(const std::map<std::string, std::string> &startLine) {
+	_start_line = startLine;
+}
+
+void Http::setParserFlag(int parserFlag) {
+	_parser_flag = parserFlag;
+}
+
+void Http::setErrorFlag(int errorFlag) {
+	_error_flag = errorFlag;
 }
