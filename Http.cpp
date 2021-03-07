@@ -4,19 +4,27 @@
 
 #include "Http.hpp"
 
-Http::Http() : _status(READ), _body(), _head(), _buffer(), _length(500), _headMap(), _start_line(), _error_flag(), _parser_flag(){}
+Http::Http() : _status("read_header"), _body(), _head(), _buffer(), _length(500), _headMap(), _start_line(), _error_flag(), _parser_flag(){}
 
-STATUS Http::getStatus() const {
+const std::string &Http::getStatus() const {
 	return _status;
 }
 
-void Http::setStatus(STATUS status) {
+void Http::setStatus(const std::string &status) {
 	_status = status;
 }
 
 
 const std::string &Http::getBody() const {
 	return _body;
+}
+
+const std::vector<std::string> &Http::getResponse() const {
+	return response;
+}
+
+void Http::setResponse(const std::vector<std::string> &response) {
+	Http::response = response;
 }
 
 void Http::setBody(const std::string &body) {
