@@ -5,19 +5,21 @@
 #ifndef HTTP_HPP
 #define HTTP_HPP
 
-#include "Server.hpp"
+#include "system_include.hpp"
 
-class RequestParser;
 class Http {
 private:
-	STATUS _status;
+	std::string _status;
 	std::string _body;
 	std::string _head;
 	std::map<std::string,std::string> _headMap;
 	std::map<std::string,std::string> _start_line;
+	std::vector<std::string>response;
 	std::string _buffer;
 	size_t _length;
 	int _error_flag;
+	int _parser_flag;
+
 public:
 	const std::map<std::string, std::string> &getHeadMap() const;
 
@@ -29,10 +31,8 @@ public:
 
 	void setParserFlag(int parserFlag);
 
-private:
-	int _parser_flag;
-public:
 	int getParserFlag() const;
+
 	int getErrorFlag() const;
 
 	void setErrorFlag(int errorFlag);
@@ -42,9 +42,10 @@ public:
 	void setLength(size_t length);
 
 	Http();
-	STATUS getStatus() const;
 
-	void setStatus(STATUS status);
+	const std::string &getStatus() const;
+
+	void setStatus(const std::string &status);
 
 	const std::string &getBody() const;
 
@@ -57,6 +58,10 @@ public:
 	const std::string &getBuffer() const;
 
 	void setBuffer(const std::string &buffer);
+
+	const std::vector<std::string> &getResponse() const;
+
+	void setResponse(const std::vector<std::string> &response);
 };
 
 

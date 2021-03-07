@@ -26,6 +26,6 @@ std::vector<t_server_config_data>		parser_config(void)
 int main()
 {
     std::vector<t_server_config_data> p = parser_config();
-	std::cout << p[0].server_name[0] << std::endl;
+	std::cout << p[0].port << std::endl;
     return 0;
 }

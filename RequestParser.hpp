@@ -5,16 +5,16 @@
 #ifndef REQUESTPARSER_HPP
 #define REQUESTPARSER_HPP
 
-#include "Server.hpp"
-class Http;
+#include "Http.hpp"
+
 class RequestParser {
 public:
 	void parser(Http &http);
 	int getErrorFlag() const;
 
-	STATUS getStatus() const;
+	const std::string &getStatus() const;
 
-	void setStatus(STATUS status);
+	void setStatus(const std::string &status);
 
 	const std::string &getHead() const;
 
@@ -41,17 +41,23 @@ public:
 	int getParserFlag() const;
 
 	void setParserFlag(int parserFlag);
-	RequestParser(const std::vector<std::string>&, const std::vector<std::string>&);
+	RequestParser(const std::vector<std::string>&, const std::vector<std::string>&, int);
+	const std::string &getBody() const;
+	void clear();
 private:
-	STATUS _status;
+	std::string _status;
 	std::vector<std::string> _supported_methods;
 	std::vector<std::string> _server_names;
 	std::map<std::string, std::string> _headMap;
 	std::map<std::string, std::string> _start_line;
 	std::string _buffer;
+	std::string _body;
 	std::list<std::string> _tokens;
 	int _error_flag;
 	int _parser_flag;
+	size_t _max_body_size;
+	long long _contet_length;
+
 	bool _check_validation_start_line();
 
 	bool _parser_tokens();
@@ -64,6 +70,8 @@ private:
 
 	void _parser_location(std::string &);
 
+	void  _body_chunked();
+
 	void _to_upper(std::string &str);
 
 	void _to_lower(std::string &str);
@@ -71,6 +79,7 @@ private:
 	size_t _find(std::string &s1, std::string &s2);
 
 	size_t _findi(std::string &s1, std::string &s2, size_t n);
+	size_t _to_int(std::string str);
 
 };
 

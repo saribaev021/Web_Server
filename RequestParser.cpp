@@ -3,6 +3,7 @@
 //
 
 #include "RequestParser.hpp"
+
 void RequestParser::_to_upper(std::string &str) {
 	for (size_t i = 0; i < str.length(); ++i) {
 		str[i] = std::toupper(str[i]);
@@ -50,20 +51,37 @@ bool RequestParser::_parser_head() {
 			value = it->substr(pos + 1, it->length());
 		}
 		if (_find(header, invalid_character) != std::string::npos){
-			_status = ERROR;
+			_status = "error";
 			_error_flag = 400;
 			return false;
 		} else{
 			std::pair<std::map<std::string, std::string>::iterator, bool>p = _headMap.insert(std::pair<std::string, std::string>(header, value));
 			if (!p.second){
 				if (header == "host" || header == "content-length"){
-					_status = ERROR;
+					_status = "error";
 					_error_flag = 400;
 					return false;
 				}
 				p.first->second += "," + value;
 			}
 		}
+	}
+	std::map<std::string, std::string>::iterator it_m;
+	if ((it_m = _headMap.find("transfer-encoding")) != _headMap.end()){
+		if (it_m->second != "chunked"){
+			_status = "error";
+			_error_flag = 501;
+			return false;
+		}
+		_status = "read_body_chunked";
+	} else if ((it_m = _headMap.find("content-length")) != _headMap.end()){
+		_contet_length = atol(it_m->second.c_str());
+		if (_max_body_size < _contet_length || _contet_length < 0){
+			_status = "error";
+			_error_flag = 400;
+			return false;
+		}
+		_status = "read_body_content_length";
 	}
 	return true;
 }
@@ -109,7 +127,7 @@ bool RequestParser::_parser_uri() {
 		_start_line["host"] = _server_names.front();
 		_parser_location(uri);
 	}else{
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 400;
 		return false;
 	}
@@ -119,22 +137,22 @@ bool RequestParser::_parser_uri() {
 bool RequestParser::_check_validation_start_line() {
 	size_t pos;
 	if (std::find(_supported_methods.begin(), _supported_methods.end(), _start_line["method"]) == _supported_methods.end()){
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 501;
 		return false;
 	}
 	if (std::find(_server_names.begin(), _server_names.end(), _start_line["host"]) == _server_names.end() || (pos = _start_line["http_version"].find("HTTP/")) != 0){
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 400;
 		return false;
 	}
 	if ((pos = _start_line["http_version"].find("1.1", 5)) == std::string::npos){
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 505;
 		return false;
 	}
 	if (_start_line["http_version"].length() != 8){
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 400;
 		return false;
 	}
@@ -150,7 +168,7 @@ bool RequestParser::_parser_start_line() {
 	tokens.push_back(_tokens.front().substr(0, _tokens.front().length()));
 	_tokens.pop_front();
 	if (tokens.size() != 3) {
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 400;
 		return false;
 	}
@@ -171,7 +189,7 @@ bool RequestParser::_parser_tokens() {
 		_buffer.erase(0, 2);
 	}
 	if (_buffer.length() > 8000){
-		_status = ERROR;
+		_status = "error";
 		_error_flag = 400;
 		return false;
 	}
@@ -187,51 +205,133 @@ bool RequestParser::_parser_tokens() {
 		if (_tokens.size() < 2) {
 			_tokens.clear();
 			_buffer.clear();
-			_status = ERROR;
+			_status = "error";
 			_error_flag = 400;
 			return false;
 		}
-		_status = PARSER;
+		_status = "execute";
 		return true;
 	}
+	_status = "read_header";
 	return false;
 }
 
 int RequestParser::getErrorFlag() const {
 	return _error_flag;
 }
+size_t RequestParser::_to_int(std::string str) {
+	std::stringstream stream;
+	size_t n;
+	stream << std::hex<<str;
+	stream >> n;
+	return n;
+}
+void RequestParser::_body_chunked() {
+	std::string delimetr = "\r\n";
+	std::list<std::string>tokens;
+	size_t length;
+	size_t pos = 0;
+	while ((pos = _buffer.find(delimetr)) != std::string::npos){
+		tokens.push_back(_buffer.substr(0, pos));
+		_buffer.erase(0, delimetr.length() + pos);
+	}
+	tokens.push_back(_buffer);
+	std::list<std::string>::iterator it = tokens.begin();
+	std::list<std::string>::iterator it2 = ++tokens.begin();
+	for (; it != tokens.end(); ++it, ++it2)
+	{
+		length = _to_int(*it);
+		if (length == 0){
+			_status = "execute";
+			_buffer.clear();
+			return;
+		}
+		if (length > it2->length()){
+			_buffer = *it;
+			_buffer += *it2;
+			_status = "read_body_chunked";
+			return;
+		}else{
+			_body += *it2;
+		}
+	}
+}
+
+void RequestParser::clear() {
+
+	_headMap.clear();
+	_start_line.clear();
+	_error_flag = 0;
+	_buffer.clear();
+	_body.clear();
+	_status.clear();
+	_tokens.clear();
+	_contet_length = 500;
+}
 
 void RequestParser::parser(Http &http) {
 	_buffer = http.getBuffer();
-	if (!_parser_tokens() || !_parser_start_line() || !_parser_head()){
-		std::cout << "error " << _error_flag;
-		http.setErrorFlag(_error_flag);
+//	std::cout << _buffer<<std::endl;
+	if (http.getStatus() == "read_header") {
+		if (!_parser_tokens() || !_parser_start_line() || !_parser_head()) {
+			if (_status != "error"){
+				return;
+			}
+//			std::cout << "error " << _error_flag;
+			http.setErrorFlag(_error_flag);
+			http.setStatus(_status);
+			clear();
+			return;
+		}
+//		std::map<std::string, std::string>::iterator it2 = _start_line.begin();
+//		for (; it2 != _start_line.end(); ++it2) {
+//			std::cout << it2->first << ":" << it2->second << std::endl;
+//		}
+//		std::cout << std::endl << std::endl;
+//		std::map<std::string, std::string>::iterator it = _headMap.begin();
+//		for (; it != _headMap.end(); ++it) {
+//			std::cout << it->first << ":" << it->second << std::endl;
+//		}
+//		std::cout << std::endl << std::endl;
+		if (_buffer.length() > 0 && (_headMap.find("content-length") == _headMap.end() || _headMap.find("transfer-encoding") == _headMap.end())){
+			_status = "error";
+			_error_flag = 411;
+			http.setErrorFlag(_error_flag);
+			http.setStatus(_status);
+			clear();
+		}
 		http.setStatus(_status);
-		return;
+		http.setErrorFlag(_error_flag);
+		http.setHeadMap(_headMap);
+		http.setStartLine(_start_line);
+		http.setLength(_contet_length);
+		if (_status == "execute"){
+			clear();
+		}
+		_tokens.clear();
+		_status.clear();
+		_error_flag = 0;
+
+	}if (http.getStatus() == "read_body_chunked"){
+		_body_chunked();
+	}else if (http.getStatus() == "read_body_content_length"){
+		if (_contet_length > _buffer.length()){
+			_body = _buffer;
+		}else {
+			_body = _buffer.substr(0, _contet_length);
+		}
+		_status = "execute";
+		http.setStatus(_status);
+		http.setBody(_body);
+		clear();
 	}
-	std::map<std::string, std::string>::iterator it2 = _start_line.begin();
-	for (; it2 != _start_line.end(); ++it2){
-		std::cout << it2->first << ":" << it2->second<<std::endl;
-	}
-	std::cout <<std::endl<<std::endl;
-	std::map<std::string, std::string>::iterator it = _headMap.begin();
-	for (; it != _headMap.end(); ++it){
-		std::cout << it->first << ":" << it->second<<std::endl;
-	}
-	std::cout <<std::endl<<std::endl;
-	http.setStatus(_status);
-	http.setErrorFlag(_error_flag);
-	http.setHeadMap(_headMap);
-	http.setStartLine(_start_line);
-	_tokens.clear();
-	_buffer.clear();
 }
 
-STATUS RequestParser::getStatus() const {
+const std::string &RequestParser::getStatus() const {
 	return _status;
 }
 
-void RequestParser::setStatus(STATUS status) {
+void RequestParser::setStatus(const std::string &status) {
 	_status = status;
 }
 
@@ -279,8 +379,15 @@ void RequestParser::setParserFlag(int parserFlag) {
 	_parser_flag = parserFlag;
 }
 
-RequestParser::RequestParser(const std::vector<std::string> &server_name, const std::vector<std::string> &supported_methods) : _status(), _supported_methods(supported_methods), _server_names(server_name),
-																															   _headMap(), _start_line(), _buffer(), _tokens(), _error_flag(), _parser_flag() {}
+RequestParser::RequestParser(const std::vector<std::string> &server_name, const std::vector<std::string> &supported_methods, int max_size) : _status(), _supported_methods(supported_methods), _server_names(server_name),
+																																			 _headMap(), _start_line(), _buffer(), _tokens(),
+																																			 _error_flag(), _parser_flag(), _max_body_size(max_size), _contet_length(500) {}
+
+const std::string &RequestParser::getBody() const {
+	return _body;
+}
+
+
 
 
 

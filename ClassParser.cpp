@@ -16,7 +16,7 @@ void	ClassParser::fing_config_file()
 {
 	if (0) //error
 		exit(1);
-	this->config_addr = "webserv.conf";
+	this->config_addr = "/Users/ndreadno/web_server/webserv.conf";
 }
 
 void ClassParser::read_from_file()
@@ -31,11 +31,11 @@ void ClassParser::read_from_file()
     }
 	else
 	{
-		std::cout << "error open" << std::endl; //error
+		//std::cout << "error open" << std::endl; //error
 		exit(1);
 	}
     in.close();     // закрываем файл
-	std::cout << this->line_data << std::endl;
+	//std::cout << this->line_data << std::endl;
 }
 
 std::vector<std::string> ClassParser::split_servers()
@@ -163,7 +163,7 @@ bool set_auto(std::string str)
 std::vector<std::string>	split_vector(std::string s, std::string type)
 {
 	std::vector<std::string> split;
-	// std::cout << s << std::endl;
+	// //std::cout << s << std::endl;
 	if (s.empty())
 		return split;
 	std::string str = my_substr(s.begin() + type.length(), s.end());
@@ -182,7 +182,7 @@ std::vector<std::string>	split_vector(std::string s, std::string type)
 				new_str += *i;
 				i++;
 			}
-			std::cout << type << " - " <<  new_str <<std::endl;
+//			//std::cout << type << " - " <<  new_str <<std::endl;
 			split.push_back(new_str);
 		}
 	}
@@ -195,7 +195,7 @@ std::string		split_string(std::string s, std::string type)
 	if (s.empty())
 		return "";
 	std::string str = my_substr(s.begin() + type.length(), s.end());
-	std::cout << type << " - " << str << std::endl;
+//	//std::cout << type << " - " << str << std::endl;
 	return (str);
 }
 
@@ -214,7 +214,7 @@ std::string		set_port(std::string s)
 	std::string new_port;
 	for(int n = port.length()-1; n >= 0; n--)
     	new_port.push_back(port[n]);
-	std::cout << "port - "<< new_port << std::endl;
+//	//std::cout << "port - "<< new_port << std::endl;
 	return (new_port);
 }
 
@@ -229,7 +229,7 @@ std::string set_ip(std::string s)
 		ip+=*i;
 		i++;
 	}
-	std::cout << "ip - "<< ip << std::endl;
+//	//std::cout << "ip - "<< ip << std::endl;
 	return  ip;
 }
 
@@ -249,7 +249,7 @@ void iset_data(t_server_config_data &s)
 	while (j < s.location.size())
 	{
 		// s.location[j].location = set_string_p(s.location[j].full_loc, "location ");
-		std::cout << "loc # " << j << "\n{" << std::endl;
+		//std::cout << "loc # " << j << "\n{" << std::endl;
 		if (s.location[j].root.empty())
 			s.location[j].root = s.root;
 		else
@@ -258,8 +258,8 @@ void iset_data(t_server_config_data &s)
 			s.location[j].index_types = s.index_types;
 		else
 			s.location[j].index_types = split_vector(s.location[j].index_types[0], "index ");
-		std::cout << "autoindex - "<< s.location[j].autoindex << std::endl;
-		std::cout << "max_body_size - "<< s.location[j].max_body_size << std::endl;
+		//std::cout << "autoindex - "<< s.location[j].autoindex << std::endl;
+		//std::cout << "max_body_size - "<< s.location[j].max_body_size << std::endl;
 		// s.location[j].method = set_vector(s.location[j].full_loc, "method ");
 		if (s.location[j].cgi_path.empty())
 			s.location[j].cgi_path = "";
@@ -276,11 +276,11 @@ void iset_data(t_server_config_data &s)
 			s.location[j].upload_storage = split_string(s.location[j].upload_storage, "cgi_path ");
 
 		// s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
-		std::cout << "}\n";
+		//std::cout << "}\n";
 		j++;
 	}
 	// for (int i = 0; i < s.index_types.size(); i++)
-	// 	std::cout << s.index_types[i] << std::endl;
+	// 	//std::cout << s.index_types[i] << std::endl;
 }
 
 t_server_config_data	pars_data_for_servers(std::string str)
@@ -314,12 +314,12 @@ t_server_config_data	pars_data_for_servers(std::string str)
 
 void	ClassParser::pars_data()
 {
-	std::cout << "___________________________" << std::endl;
+//	//std::cout << "___________________________" << std::endl;
 	std::vector<std::string> lines_for_server = split_servers();
 	int j = 0;
 	while (j < lines_for_server.size())
 	{
-		std::cout << "___________________________ server #" << j << std::endl;
+//		//std::cout << "___________________________ server #" << j << std::endl;
 		this->data.push_back(pars_data_for_servers(lines_for_server[j]));
 		j++;
 	}

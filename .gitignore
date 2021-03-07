@@ -1,8 +1,9 @@
 cmake-build-debug/
 CMakeLists.txt
 a.out
-client
+_client
 server
 test*.*
 request
 .idea/
+.gitignore
