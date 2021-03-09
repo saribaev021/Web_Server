@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/08 20:09:29 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 00:21:32 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct	s_server_config_data
     std::string					root; //+ по дефлту .
     std::vector<std::string>	error_page; //- 
 	std::vector<std::string>	index_types; //+
-    unsigned long				max_body_size; // - не указано (по дефолту максимальный?)
+    unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
 	std::string					usr;
 }				t_server_config_data;
 
@@ -66,7 +66,14 @@ std::vector<t_locations> split_locations(std::string &str);
 unsigned long long 		set_size(std::string str);
 std::vector<std::string> set_vector(std::string &str, std::string found);
 t_server_config_data	pars_data_for_servers(std::string str);
-void	pars_check_name(std::vector<std::string> &server_name);
 std::vector<std::string> set_error_page(std::string &str, std::string found);
+void	pars_check_name(std::vector<std::string> server_name);
+void	pars_check_ip(std::string ip);
+void	pars_check_port(std::string port);
+void	pars_check_root(std::string &root);
+void	pars_check_max_body_size(unsigned long &size);
+void	pars_check_location_loc(std::string &location, std::string root);
+void	pars_check_location_root(std::string &root, std::string server_root);
+void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 20:14:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/08 17:59:08 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/09 22:23:06 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,8 @@ std::string	ft_trim_spases(std::string s)
 	std::string::iterator end = s.end();
 	while (ft_spases_p(*i))
 		i++;
+	if (i == end)
+		return "";
 	end--;
 	while (ft_spases_p(*end))
 		end--;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/08 18:12:52 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 00:24:40 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int main()
 		std::cout << p[i].ip << std::endl;
 		std::cout << p[i].port << std::endl;
 		std::cout << p[i].root << std::endl;
+		std::cout << p[i].max_body_size << std::endl;
 		for (k = 0; k < p[i].index_types.size(); k++)
 			std::cout << p[i].index_types[k] << std::endl;
 		while (j < p[i].location.size())

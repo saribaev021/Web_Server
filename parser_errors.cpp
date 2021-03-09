@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_errors.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:23:42 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/08 20:07:10 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/09 23:03:23 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,15 @@ void ft_exit(int error)
 	case UN_METHOD:
 		std::cout << "unknown method" << std::endl;		break;
 	case IP_ERROR:
-		std::cout << "listen ip error" << std::endl;	break;
+		std::cout << "ip error" << std::endl;			break;
+	case NO_NAME:
+		std::cout << "No name =(" << std::endl;			break;
+	case NO_PORT:
+		std::cout << "unknown port" << std::endl;		break;
+	case DOUBLE_SL:
+		std::cout << "Double '/'" << std::endl;			break;
+	case NO_LOCATION:
+		std::cout << "No location" << std::endl;		break;
 	default:
 		std::cout << "Error unknown error\n";			break;
 	}

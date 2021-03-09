@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_set_data.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/08 20:08:07 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/09 22:21:06 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,14 @@ static std::string		set_port(std::string s)
 	std::string::reverse_iterator end = s.rend();
 	std::string port;
 	while (i != end && ft_spases_p(*i))
+		i++;
+	while (i != end && isnumber(*i))
 	{
 		port+= *i;
 		i++;
 	}
-	while (i != end && isalnum(*i))
-	{
-		port+= *i;
-		i++;
-	}
+	if (*i != ':')
+		ft_exit(NO_PORT);
 	if (port.empty())
 		return "";
 	std::string new_port;

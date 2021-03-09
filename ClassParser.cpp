@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClassParser.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/08 19:54:16 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 00:22:31 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,18 +231,19 @@ void ClassParser::set_default_values()
 	while (i < data.size())
 	{
 		pars_check_name(data[i].server_name);
-		// pars_check_ip(data[i].ip);
-		// pars_check_port(data[i].port);
-		// pars_check_root(data[i].root);
-		// pars_check_index_types(data[i].index_types);
-		// pars_check_max_body_size(data[i].max_body_size);
+		pars_check_ip(data[i].ip);
+		pars_check_port(data[i].port);
+		pars_check_root(data[i].root);
+		pars_check_max_body_size(data[i].max_body_size);
+		j = 0;
 		while (j < data[i].location.size())
 		{	
-			// pars_check_location_loc(data[i].location[j].location);
-			// pars_check_location_root(data[i].location[j].root, data[i].root);
-			// pars_check_location_max_body_size(data[i].location[j].max_body_size, data[i].max_body_size);
-			// pars_check_location_cgi(data[i].location[i]);
-			// pars_check_location_index(data[i].location[j].index_types, data[i].index_types);
+			pars_check_location_loc(data[i].location[j].location, data[i].root);
+			pars_check_location_root(data[i].location[j].root, data[i].root);
+			pars_check_location_max_body_size(data[i].location[j].max_body_size, data[i].max_body_size);
+			pars_check_location_loc(data[i].location[i].cgi_path, data[i].location[j].root);
+			if (data[i].location[j].index_types.empty())
+				data[i].location[j].index_types = data[i].index_types;
 			j++;
 		}
 		i++;
