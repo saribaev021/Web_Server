@@ -15,21 +15,31 @@ bool compare(const t_locations &s1, const t_locations &s2){
 	}
 	return key < key2;
 }
+// std::vector<t_server_config_data>		parser_config(void)
+// {
+// 	ClassParser	p;
+
+// 	p.fing_config_file();
+// 	p.read_from_file();
+// 	p.pars_data();
+// 	p.data[0].location[0].root = "/Users/ndreadno/web_server";
+// 	p.data[0].location[0].location = p.data[0].location[0].root + "/";
+// 	p.data[0].location[0].method[0] = "GET";
+// 	p.data[0].location[0].cgi_path = "/usr/bin/php";
+// 	for (size_t i = 0; i < p.data.size(); ++i){
+// 		std::sort(p.data[i].location.begin(), p.data[i].location.end(), compare);
+// 	}
+// 	return (p.data);
+// }
 std::vector<t_server_config_data>		parser_config(void)
 {
 	ClassParser	p;
 
-	p.fing_config_file();
-	p.read_from_file();
-	p.pars_data();
-	p.data[0].location[0].root = "/Users/ndreadno/web_server";
-	p.data[0].location[0].location = p.data[0].location[0].root + "/";
-	p.data[0].location[0].method[0] = "GET";
-	p.data[0].location[0].cgi_path = "/usr/bin/php";
-	for (size_t i = 0; i < p.data.size(); ++i){
-		std::sort(p.data[i].location.begin(), p.data[i].location.end(), compare);
-	}
-	return (p.data);
+	p.fing_config_file(); // поиск конфига
+	p.read_from_file(); // чтение конфига
+	p.pars_data(); // разбитие на токены
+	p.set_default_values(); // установка значений (дефолтные/по серверу)
+	return (p.get_data());
 }
 
 int main()  {

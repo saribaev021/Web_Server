@@ -13,3 +13,4 @@ test_merge
 favicon.ico
 *.conf
 *.DS_Store
+*.sh

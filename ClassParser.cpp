@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/05 18:37:39 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void ClassParser::read_from_file()
 		exit(1);
 	}
     in.close();     // закрываем файл
-	//std::cout << this->line_data << std::endl;
 }
 
 std::vector<std::string> ClassParser::split_servers()
@@ -52,6 +51,8 @@ std::vector<std::string> ClassParser::split_servers()
 		if (found_block("server ", i) == 1)
 		{
 			len_of_one_server = found_last_bracket(i, end);
+			if (len_of_one_server == -1)
+				ft_exit(NO_BRAKET);
 			lines_for_server.push_back(my_substr(i, len_of_one_server));
 			i+=len_of_one_server;
 		}
@@ -61,6 +62,35 @@ std::vector<std::string> ClassParser::split_servers()
 			ft_error_p();
 	}
 	return lines_for_server;
+}
+
+std::vector<std::string> set_error_page(std::string &str, std::string found)
+{
+	std::vector<std::string> names;
+	std::string s_line;
+	std::string::iterator i;
+	std::string::iterator end;
+	int		len_of_one_server;
+	size_t index;
+	i = str.begin();
+	end = str.end();
+	i += ft_skip_spases(i);
+	while (i != str.end())
+	{
+		if (found_block(found, i) == 1)
+		{
+			len_of_one_server = found_last_newline(i, end);
+			s_line = my_substr(i, len_of_one_server);
+			index = i - str.begin();
+			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
+			end = str.end();
+			i = str.begin() + index;
+			names.push_back(s_line);
+		}
+		else
+			i++;
+	}
+	return names;
 }
 
 std::vector<std::string> set_vector(std::string &str, std::string found)
@@ -80,9 +110,8 @@ std::vector<std::string> set_vector(std::string &str, std::string found)
 			len_of_one_server = found_last_newline(i, end);
 			s_line = my_substr(i, len_of_one_server);
 			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
-			end = str.end();
-			i++;
 			names.push_back(s_line);
+			break;
 		}
 		else
 			i++;
@@ -101,16 +130,20 @@ std::string set_string_p(std::string &str, std::string found)
 	i += ft_skip_spases(i);
 	while (i != str.end())
 	{
-		if (found_block(found, i) == 1)
+		if (ft_spases_p(*i) == 1)
+			i++;
+		else if (found_block(found, i) == 1)
 		{
 			len_of_one_server = found_last_newline(i, end);
 			s_line = my_substr(i, len_of_one_server);
 			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
-			end = str.end();
-			i++;
+			break;
 		}
 		else
-			i++;
+		{	
+			while (i != str.end() && *i != '\n')
+				i++;
+		}
 	}
 	return s_line;
 }
@@ -120,6 +153,7 @@ std::vector<t_locations> split_locations(std::string &str)
 	std::string::iterator i;
 	std::string::iterator end;
 	std::vector<t_locations> loc;
+	size_t index;
 	t_locations all;
 	int		len_of_one_server;
 	i = str.begin();
@@ -130,11 +164,14 @@ std::vector<t_locations> split_locations(std::string &str)
 		if (found_block("location ", i) == 1)
 		{
 			len_of_one_server = found_last_location(i, end);
+			if (len_of_one_server == -1)
+				ft_exit(NO_BRAKET);
 			all.full_loc = (my_substr(i, len_of_one_server));
 			loc.push_back(all);
+			index = i - str.begin();
 			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
 			end = str.end();
-			i++;
+			i = str.begin() + index;
 		}
 		else
 			i++;
@@ -142,185 +179,89 @@ std::vector<t_locations> split_locations(std::string &str)
 	return loc;
 }
 
-unsigned long set_size(std::string str)
+unsigned long long set_size(std::string str)
 {
 	if (str.empty())
 		return 0;
 	std::string s = my_substr(str.begin() + 14, str.end());
-	return 10;
-}
-
-bool set_auto(std::string str)
-{
-	if (str.length() < 1)
-		return (false);
-	size_t pos = str.find("on");
-	if (pos != std::string::npos)
-		return (true);
-	return (false);
-}
-
-std::vector<std::string>	split_vector(std::string s, std::string type)
-{
-	std::vector<std::string> split;
-	// //std::cout << s << std::endl;
-	if (s.empty())
-		return split;
-	std::string str = my_substr(s.begin() + type.length(), s.end());
-	std::string new_str;
-	std::string::iterator i = str.begin();
-	int n;
-	while (i != str.end())
-	{
-		if (ft_spases_p(*i))
-			i++;
-		else
-		{
-			std::string new_str;
-			while (ft_spases_p(*i) == 0 && i != str.end())
-			{
-				new_str += *i;
-				i++;
-			}
-//			//std::cout << type << " - " <<  new_str <<std::endl;
-			split.push_back(new_str);
-		}
-	}
-	return (split);
+	s = ft_trim_spases(s);
+	unsigned long long i = strtoul(s.c_str(), NULL, 10);
+	int n = 0;
+	while (isnumber(s[n]))
+		n++;
 	
-}
-
-std::string		split_string(std::string s, std::string type)
-{
-	if (s.empty())
-		return "";
-	std::string str = my_substr(s.begin() + type.length(), s.end());
-//	//std::cout << type << " - " << str << std::endl;
-	return (str);
-}
-
-std::string		set_port(std::string s)
-{
-	std::string::reverse_iterator i = s.rbegin();
-	std::string::reverse_iterator end = s.rend();
-	std::string port;
-	while (i != end && isalnum(*i))
+	switch (s[n])
 	{
-		port+= *i;
-		i++;
-	}
-	if (port.empty())
-		return "";
-	std::string new_port;
-	for(int n = port.length()-1; n >= 0; n--)
-    	new_port.push_back(port[n]);
-//	//std::cout << "port - "<< new_port << std::endl;
-	return (new_port);
-}
-
-std::string set_ip(std::string s)
-{
-	if (s.empty())
-		exit(1);
-	std::string::iterator i = s.begin();
-	std::string ip;
-	while (i != s.end() && *i != ':')
-	{
-		ip+=*i;
-		i++;
-	}
-//	//std::cout << "ip - "<< ip << std::endl;
-	return  ip;
-}
-
-void iset_data(t_server_config_data &s)
-{
-	s.server_name = split_vector(s.server_name[0], "server_name ");
-	if (!s.index_types.empty())
-		s.index_types = split_vector(s.index_types[0], "index ");
-	s.root = split_string(s.root, "root ");
-	if (s.ip.empty())
-		exit(1);
-	std::string copy = s.ip;
-	s.ip = set_ip(split_string(copy, "listen "));
-	s.port = set_port(copy);
-	s.server_name.push_back(s.ip);
-	int j = 0;
-	while (j < s.location.size())
-	{
-		// s.location[j].location = set_string_p(s.location[j].full_loc, "location ");
-		//std::cout << "loc # " << j << "\n{" << std::endl;
-		if (s.location[j].root.empty())
-			s.location[j].root = s.root;
+	case 'K':
+		if (i > (ULONG_MAX >> 10))
+			i = ULONG_MAX;
+		else 
+			i = i << 10;
+		break;
+	case 'M':
+		if (i > (ULONG_MAX >> 20))
+			i = ULONG_MAX;
+		else 
+			i = i << 20;
+		break;
+	case 'G':
+		if (i > (ULONG_MAX >> 30))
+			i = ULONG_MAX;
+		else 
+			i = i << 30;
+		break;
+	default:
+		if (n == s.length())
+			;
 		else
-			s.location[j].root = s.root + split_string(s.location[j].root, "root ");
-		if (s.location[j].index_types.empty())
-			s.location[j].index_types = s.index_types;
-		else
-			s.location[j].index_types = split_vector(s.location[j].index_types[0], "index ");
-		//std::cout << "autoindex - "<< s.location[j].autoindex << std::endl;
-		//std::cout << "max_body_size - "<< s.location[j].max_body_size << std::endl;
-		// s.location[j].method = set_vector(s.location[j].full_loc, "method ");
-		if (s.location[j].cgi_path.empty())
-			s.location[j].cgi_path = "";
-		else
-			s.location[j].cgi_path = s.location[j].root + '/' + split_string(s.location[j].cgi_path, "cgi_path ");
-// s.location[j].cgi_extensions = set_vector(s.location[j].full_loc, "cgi_extensions ");
-
-		if (!s.location[j].cgi_extensions.empty())
-			s.location[j].cgi_extensions = split_vector(s.location[j].cgi_extensions[0], "cgi_extensions ");
-		
-		if (s.location[j].upload_storage.empty())
-			s.location[j].upload_storage = "";
-		else
-			s.location[j].upload_storage = split_string(s.location[j].upload_storage, "cgi_path ");
-
-		// s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
-		//std::cout << "}\n";
-		j++;
+			ft_exit(MAX_SIZE_ERROR);
+		break;
 	}
-	// for (int i = 0; i < s.index_types.size(); i++)
-	// 	//std::cout << s.index_types[i] << std::endl;
-}
-
-t_server_config_data	pars_data_for_servers(std::string str)
-{
-	t_server_config_data s;
-	s.location = split_locations(str);
-	int j = 0;
-	while (j < s.location.size())
-	{
-		s.location[j].location = set_string_p(s.location[j].full_loc, "location ");
-		s.location[j].root = set_string_p(s.location[j].full_loc, "root ");
-		s.location[j].autoindex = set_auto(set_string_p(s.location[j].full_loc, "autoindex "));
-		s.location[j].index_types = set_vector(s.location[j].full_loc, "index ");
-		s.location[j].method = set_vector(s.location[j].full_loc, "method ");
-		s.location[j].max_body_size = set_size(set_string_p(s.location[j].full_loc, "max_body_size "));
-		s.location[j].cgi_extensions = set_vector(s.location[j].full_loc, "cgi_extensions ");
-		s.location[j].cgi_path = set_string_p(s.location[j].full_loc, "cgi_path ");
-		s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
-		j++;
-	}
-	s.server_name = set_vector(str, "server_name ");
-	s.index_types = set_vector(str, "index ");
-	s.root = set_string_p(str, "root ");
-	s.ip = set_string_p(str, "listen ");
-	s.usr = set_string_p(str, "usr ");
-	s.error_page = set_vector(str, "error_page ");
-	s.max_body_size = set_size(set_string_p(str, "max_body_size "));
-	iset_data(s);
-	return s;
+	
+	return i;
 }
 
 void	ClassParser::pars_data()
 {
-//	//std::cout << "___________________________" << std::endl;
 	std::vector<std::string> lines_for_server = split_servers();
 	int j = 0;
 	while (j < lines_for_server.size())
 	{
-//		//std::cout << "___________________________ server #" << j << std::endl;
 		this->data.push_back(pars_data_for_servers(lines_for_server[j]));
 		j++;
+	}
+}
+
+
+void ClassParser::set_default_values()
+{
+	int i = 0;
+	int j;
+	int k;
+	
+	if (data.empty())
+		ft_exit(777);
+	while (i < data.size())
+	{
+		pars_check_name(data[i].server_name);
+		pars_check_ip(data[i].ip);
+		pars_check_port(data[i].port);
+		pars_check_root(data[i].root);
+		pars_check_max_body_size(data[i].max_body_size);
+		j = 0;
+		if (data[i].location.empty())
+			ft_exit(777);
+		while (j < data[i].location.size())
+		{	
+			adress_cat(data[i].location[j].location, data[i].root);
+			pars_check_location_root(data[i].location[j].root, data[i].root);
+			pars_check_location_max_body_size(data[i].location[j].max_body_size, data[i].max_body_size);
+			adress_cat(data[i].location[j].cgi_path, data[i].location[j].root);
+			adress_cat(data[i].location[j].upload_storage, data[i].location[j].root);
+			if (data[i].location[j].index_types.empty())
+				data[i].location[j].index_types = data[i].index_types;
+			j++;
+		}
+		i++;
 	}
 }
