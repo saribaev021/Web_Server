@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_errors.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:24:12 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/09 23:01:31 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 20:41:39 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 # define NO_PORT 6
 # define DOUBLE_SL 7
 # define NO_LOCATION 8
+# define MAX_SIZE_ERROR 9
+# define NO_BRAKET 10
+# define ERROR_PAGE_ERROR 11
 
 void	ft_exit(int error);
 void	ft_exit(int error, std::string::iterator i);

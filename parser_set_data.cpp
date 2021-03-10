@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_set_data.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/09 22:21:06 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 21:29:45 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,26 @@ std::string set_loc(std::string s)
 	return str;
 }
 
+std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, std::string root)
+{
+	std::map<int, std::string> map;
+	for (int i = 0; i < vector.size(); i++)
+	{
+		std::vector<std::string> v = ft_split_string_to_vector(vector[i], ' ');
+		if (v.size() != 3 || !ft_isnumstring(v[1]))
+			ft_exit(ERROR_PAGE_ERROR);
+		int num = std::stoi(v[1]);
+		if (num < 0)
+			ft_exit(ERROR_PAGE_ERROR);
+		adress_cat(v[2], root);
+		std::pair<std::map<int, std::string>::iterator, bool> a;
+		a = map.insert(std::pair<int, std::string>(num, v[2]));
+		if (!a.second) //проверка на совпадения
+			ft_exit(ERROR_PAGE_ERROR);
+	}
+	return map;
+}
+
 static void iset_data(t_server_config_data &s)
 {
 	if (s.server_name.empty())
@@ -156,6 +176,7 @@ static void iset_data(t_server_config_data &s)
 	s.ip = ft_trim_spases(set_ip(split_string(copy, "listen ")));
 	s.port = set_port(copy);
 	s.server_name.push_back(s.ip);
+	s.error_page = set_error_page_map(s.error_page_v, s.root);
 	int j = 0;
 	while (j < s.location.size())
 	{
@@ -163,7 +184,7 @@ static void iset_data(t_server_config_data &s)
 		if (s.location[j].root.empty())
 			s.location[j].root = s.root;
 		else
-			s.location[j].root = s.root + '/' + split_string(s.location[j].root, "root ");
+			s.location[j].root = split_string(s.location[j].root, "root ");
 		if (s.location[j].index_types.empty())
 			s.location[j].index_types = s.index_types;
 		else
@@ -178,7 +199,7 @@ static void iset_data(t_server_config_data &s)
 		if (s.location[j].cgi_path.empty())
 			s.location[j].cgi_path = "";
 		else
-			s.location[j].cgi_path = s.location[j].root + '/' + split_string(s.location[j].cgi_path, "cgi_path ");
+			s.location[j].cgi_path = split_string(s.location[j].cgi_path, "cgi_path ");
 
 		if (!s.location[j].cgi_extensions.empty())
 			s.location[j].cgi_extensions = split_vector(s.location[j].cgi_extensions[0], "cgi_extensions ");
@@ -218,7 +239,7 @@ t_server_config_data	pars_data_for_servers(std::string str)
 	s.root = set_string_p(str, "root ");
 	s.ip = set_string_p(str, "listen ");
 	s.usr = set_string_p(str, "usr ");
-	s.error_page = set_error_page(str, "error_page ");
+	s.error_page_v = set_error_page(str, "error_page ");
 	s.max_body_size = set_size(set_string_p(str, "max_body_size "));
 	iterator = str.begin() + 7;
 	if (check_error_token(iterator, str.end()) != str.end())

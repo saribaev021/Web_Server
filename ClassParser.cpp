@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClassParser.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 00:22:31 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ std::vector<std::string> ClassParser::split_servers()
 		if (found_block("server ", i) == 1)
 		{
 			len_of_one_server = found_last_bracket(i, end);
+			if (len_of_one_server == -1)
+				ft_exit(NO_BRAKET);
 			lines_for_server.push_back(my_substr(i, len_of_one_server));
 			i+=len_of_one_server;
 		}
@@ -69,6 +71,7 @@ std::vector<std::string> set_error_page(std::string &str, std::string found)
 	std::string::iterator i;
 	std::string::iterator end;
 	int		len_of_one_server;
+	size_t index;
 	i = str.begin();
 	end = str.end();
 	i += ft_skip_spases(i);
@@ -78,9 +81,10 @@ std::vector<std::string> set_error_page(std::string &str, std::string found)
 		{
 			len_of_one_server = found_last_newline(i, end);
 			s_line = my_substr(i, len_of_one_server);
+			index = i - str.begin();
 			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
 			end = str.end();
-			i++;
+			i = str.begin() + index;
 			names.push_back(s_line);
 		}
 		else
@@ -106,8 +110,6 @@ std::vector<std::string> set_vector(std::string &str, std::string found)
 			len_of_one_server = found_last_newline(i, end);
 			s_line = my_substr(i, len_of_one_server);
 			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
-			end = str.end();
-			i++;
 			names.push_back(s_line);
 			break;
 		}
@@ -151,6 +153,7 @@ std::vector<t_locations> split_locations(std::string &str)
 	std::string::iterator i;
 	std::string::iterator end;
 	std::vector<t_locations> loc;
+	size_t index;
 	t_locations all;
 	int		len_of_one_server;
 	i = str.begin();
@@ -161,11 +164,14 @@ std::vector<t_locations> split_locations(std::string &str)
 		if (found_block("location ", i) == 1)
 		{
 			len_of_one_server = found_last_location(i, end);
+			if (len_of_one_server == -1)
+				ft_exit(NO_BRAKET);
 			all.full_loc = (my_substr(i, len_of_one_server));
 			loc.push_back(all);
+			index = i - str.begin();
 			str = my_substr(str.begin(), i) + my_substr(i + len_of_one_server, end);
 			end = str.end();
-			i++;
+			i = str.begin() + index;
 		}
 		else
 			i++;
@@ -205,8 +211,13 @@ unsigned long long set_size(std::string str)
 			i = i << 30;
 		break;
 	default:
+		if (n == s.length())
+			;
+		else
+			ft_exit(MAX_SIZE_ERROR);
 		break;
 	}
+	
 	return i;
 }
 
@@ -228,6 +239,8 @@ void ClassParser::set_default_values()
 	int j;
 	int k;
 	
+	if (data.empty())
+		ft_exit(777);
 	while (i < data.size())
 	{
 		pars_check_name(data[i].server_name);
@@ -236,12 +249,15 @@ void ClassParser::set_default_values()
 		pars_check_root(data[i].root);
 		pars_check_max_body_size(data[i].max_body_size);
 		j = 0;
+		if (data[i].location.empty())
+			ft_exit(777);
 		while (j < data[i].location.size())
 		{	
-			pars_check_location_loc(data[i].location[j].location, data[i].root);
+			adress_cat(data[i].location[j].location, data[i].root);
 			pars_check_location_root(data[i].location[j].root, data[i].root);
 			pars_check_location_max_body_size(data[i].location[j].max_body_size, data[i].max_body_size);
-			pars_check_location_loc(data[i].location[i].cgi_path, data[i].location[j].root);
+			adress_cat(data[i].location[j].cgi_path, data[i].location[j].root);
+			adress_cat(data[i].location[j].upload_storage, data[i].location[j].root);
 			if (data[i].location[j].index_types.empty())
 				data[i].location[j].index_types = data[i].index_types;
 			j++;

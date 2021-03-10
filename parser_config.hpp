@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 00:21:32 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <iostream>
 # include <vector>
 # include <list>
+# include <map>
 # include <string>
 # include <fstream>
 
@@ -43,7 +44,8 @@ typedef struct	s_server_config_data
 	std::string					ip; //+
 	std::string					port; //+
     std::string					root; //+ по дефлту .
-    std::vector<std::string>	error_page; //- 
+    std::vector<std::string>	error_page_v; //- 
+	std::map<int, std::string>	error_page; 
 	std::vector<std::string>	index_types; //+
     unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
 	std::string					usr;
@@ -72,8 +74,10 @@ void	pars_check_ip(std::string ip);
 void	pars_check_port(std::string port);
 void	pars_check_root(std::string &root);
 void	pars_check_max_body_size(unsigned long &size);
-void	pars_check_location_loc(std::string &location, std::string root);
+void	adress_cat(std::string &location, std::string root);
 void	pars_check_location_root(std::string &root, std::string server_root);
 void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size);
+std::vector<std::string> ft_split_string_to_vector(std::string str, char ch);
+bool ft_isnumstring(std::string str);
 
 #endif

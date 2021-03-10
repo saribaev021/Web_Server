@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 00:23:56 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ std::string adresscat(std::string root, std::string location)
 	return str;
 }
 
-void	pars_check_location_loc(std::string &location, std::string root)
+void	adress_cat(std::string &location, std::string root)
 {
 	if (location.empty())
 		location = "/"; //так?
@@ -122,7 +122,7 @@ void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned lo
 		max_body_size = server_max_body_size;
 }
 // void	pars_check_max_body_size(data[i].max_body_size);
-// void	pars_check_location_loc(data[i].location[j].location);
+// void	adress_cat(data[i].location[j].location);
 // void	pars_check_location_root(data[i].location[j].root, data[i].root);
 // void	pars_check_location_max_body_size(data[i].location[j].max_body_size, data[i].max_body_size);
 // void	pars_check_location_cgi(data[i].location[i]);

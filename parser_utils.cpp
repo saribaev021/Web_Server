@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 20:14:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/09 22:23:06 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/10 20:47:22 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,4 +203,32 @@ std::string::iterator my_find(std::string &s, std::string des)
 	else 
 		i = s.end();
 	return i;
+}
+
+std::vector<std::string> ft_split_string_to_vector(std::string str, char ch)
+{
+	std::vector<std::string> vector;
+	std::string new_str;
+	for (size_t index = 0; index < str.length(); index++)
+	{
+		if (str[index] == ch)
+		{
+			if (!new_str.empty())
+				vector.push_back(new_str);
+			new_str.clear();
+		}
+		else
+			new_str += str[index];
+	}
+	return (vector);
+}
+
+bool ft_isnumstring(std::string str)
+{
+	for (int i = 0; i < str.size(); i++)
+	{
+		if (!isnumber(str[i]))
+			return false;
+	}
+	return true;
 }
