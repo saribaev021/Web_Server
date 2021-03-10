@@ -63,7 +63,6 @@ int main()  {
 			for (size_t j = 0; j < servers[i].getClient().size(); ++j) {
 				FD_SET(servers[i].getClient()[j].getFd(), &readFds);
 				if (servers[i].getClient()[j].getHttp().getStatus() == "write") {
-					std::cout << "ss"<<std::endl;
 					FD_SET(servers[i].getClient()[j].getFd(), &writeFds);
 				}
 				if (servers[i].getClient()[j].getFd() > max_d)
@@ -74,7 +73,7 @@ int main()  {
 		time_out.tv_usec = 000000;
 		int res = select(max_d + 1, &readFds, &writeFds, nullptr, &time_out);
 		if (res == 0){
-			std::cout << "res"<<std::endl;
+//			std::cout << "res"<<std::endl;
 			continue;
 		}
 		if (res < 0){
@@ -91,6 +90,7 @@ int main()  {
 		}
 		for (size_t i = 0; i < servers.size(); ++i){
 			if (FD_ISSET(servers[i].getSocketServer(), &readFds)){
+				std::cout << "new connection"<<std::endl;
 				servers[i].new_connection();
 			}
 		}
@@ -98,7 +98,6 @@ int main()  {
 			for (size_t k = 0; k < servers[i].getClient().size(); ++k){
 				if (FD_ISSET(servers[i].getClient()[k].getFd(), &readFds)){
 					servers[i].recive(k);
-					std::cout << servers[i].getClient().size()<<std::endl;
 //					std::cout <<"QWERT"<<servers[i].getClient()[k].getHttp().getStatus()<<std::endl;
 				}
 			}

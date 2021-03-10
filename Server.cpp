@@ -39,11 +39,15 @@ const std::vector<Client> &Server::getClient() const {
 	return _client;
 }
 
-void Server::_controller(Client &client) {
+void Server::_controller(Client &client, t_locations &locations, std::string &method)
+{
 	Http http = client.getHttp();
 	if (http.getStatus() == "error"){
 		http.setResponse(_error_page());
 	}else{
+//		if (method == "HEAD"){
+//
+//		}
 		std::vector<std::string>response;
 		response.push_back("HTTP/1.1 200 OK\r\n"
 						   "Server: nginx/1.14.2\r\n"
@@ -54,7 +58,7 @@ void Server::_controller(Client &client) {
 						   "Connection: keep-alive\r\n"
 						   "ETag: \"6043bff3-6\"\r\n"
 						   "Accept-Ranges: bytes\r\n\r\n");
-		response.push_back("hello");
+		response.push_back("hello\n");
 		http.setResponse(response);
 		http.setStatus("write");
 	}
@@ -76,6 +80,7 @@ void Server::new_connection() {
 void Server::recive(int index_client) {
 	Http http = _client[index_client].getHttp();
 	RequestParser parser = _client[index_client].getParserRequest();
+	std::cout << "INDEX CLIENT: "<<index_client<<std::endl;
 	if (_socket.receive(_client[index_client].getFd(), http)){
 		parser.parser(http);
 		_client[index_client].setHttp(http);
@@ -93,7 +98,7 @@ std::vector<std::string> Server::_error_page() {
 								   "Server: nginx/1.14.2\r\n"
 								   "Date: Sat, 06 Mar 2021 17:09:06 GMT\r\n"
 								   "Content-Type: text/html\r\n"
-								   "Content-Length: 173\r\n"
+								   "Content-Length: 165\r\n"
 								   "Connection: close\r\n\r\n"));
 	response.push_back(std::string("<html>\n<head><title>400 Bad Request</title></head>\n"
 								   "<body bgcolor=\"white\">\n"
@@ -105,11 +110,25 @@ std::vector<std::string> Server::_error_page() {
 }
 
 void Server::response(int index_client) {
-	for (size_t i = 0; i < _client[index_client].getHttp().getResponse().size() ; ++i) {
-		_socket.response(_client[index_client].getFd(), _client[index_client].getHttp().getResponse()[i]);
-	}
 	Http http = _client[index_client].getHttp();
-	http.setStatus("read_header");
+	std::vector<std::string> response = http.getResponse();
+	std::string status;
+	size_t length = 500;
+	size_t index = 0;
+	if (response[0].length()){
+		index = 0;
+		length = response[0].length() < length ? response[0].length() : length;
+	}else if (response[1].length()){
+		index = 1;
+		length = response[1].length() < length ? response[1].length() : length;
+	}
+	_socket.response(_client[index_client].getFd(), response[index], length);
+	response[index].erase(0, length);
+	http.setResponse(response);
+	if (response[0].empty() && response[1].empty()) {
+		http.setStatus("read_header");
+		http.clear();
+	}
 	_client[index_client].setHttp(http);
 }
 
@@ -117,17 +136,18 @@ void Server::response(int index_client) {
 void Server::_execute_methods(Client &client) {
 	Http http = client.getHttp();
 	size_t pos;
-	std::map<std::string, std::string>::const_iterator it = http.getStartLine().find("location");
 	std::map<std::string, std::string>m = http.getStartLine();
 	m["location"].insert(0, _config.root);
 	http.setStartLine(m);
+	std::map<std::string, std::string>::const_iterator it = http.getStartLine().find("location");
 
 	if (http.getStatus() != "error") {
 		http.setStatus("write");
 		std::pair<bool, size_t> p = _check_locations(it->second, _config.location);
 		if (p.first) {
 			it = http.getStartLine().find("method");
-			if (_check_methods(it->second, _config.location[p.second].method)) {
+			std::pair<bool, size_t>ppp = _check_methods(it->second, _config.location[p.second].method);
+			if (ppp.first) {
 				std::pair<bool, std::string> pp = _check_source(http.getStartLine().find("location")->second,
 																http.getStartLine().find("source")->second);
 				if (pp.first) {
@@ -135,21 +155,30 @@ void Server::_execute_methods(Client &client) {
 					tmp["source"] = pp.second;
 					http.setStartLine(tmp);
 					client.setHttp(http);
-					_controller(client);
+					_controller(client, _config.location[p.second], _config.location[p.second].method[ppp.second]);
 				} else {
 					http.setResponse(_error_page());
+					http.setStatus("write");
 					client.setHttp(http);
 				}
 			} else {
 				http.setResponse(_error_page());
+				http.setStatus("write");
+
 				client.setHttp(http);
 			}
 		} else {
 			http.setResponse(_error_page());
+			http.setStatus("write");
+
 			client.setHttp(http);
 		}
 	} else{
+		std::ofstream file("server.log");
+		file << http.getBuffer();
 		http.setResponse(_error_page());
+		http.setStatus("write");
+
 		client.setHttp(http);
 	}
 //	if ((pos = client.getHttp().getResponse().front().find("Content-Length:")) != std::string::npos){
@@ -173,13 +202,13 @@ std::pair<bool, size_t> Server::_check_locations(const std::string &loc, const s
 	}
 	return std::pair<bool, int>(false, 0);
 }
-bool Server::_check_methods(const std::string &method, const std::vector<std::string> &methods){
+std::pair<bool, size_t> Server::_check_methods(const std::string &method, const std::vector<std::string> &methods){
 	for (size_t i = 0; i < methods.size(); ++i) {
 		if (methods[i] == method){
-			return true;
+			return std::pair<bool, size_t>(true, i);
 		}
 	}
-	return false;
+	return std::pair<bool, size_t>(false, 0);
 }
 std::pair<bool, std::string> Server::_check_source(const std::string &location, const std::string &source){
 	int fd;
@@ -204,5 +233,6 @@ std::pair<bool, std::string> Server::_check_source(const std::string &location, 
 	if ((fd = open(full_path.c_str(), O_RDONLY)) < 0){
 		return std::pair<bool, std::string>(false, std::string());
 	}
+	close(fd);
 	return std::pair<bool, std::string>(true, std::string(source));
 }

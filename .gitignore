@@ -6,8 +6,10 @@ server
 test*.*
 request
 .idea/
-<<<<<<< HEAD
+HEAD
 *.log
-=======
->>>>>>> test_merge
+test_merge
 .gitignore
+favicon.ico
+*.conf
+*.DS_Store

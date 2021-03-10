@@ -11,14 +11,12 @@ class Http {
 private:
 	std::string _status;
 	std::string _body;
-	std::string _head;
 	std::map<std::string,std::string> _headMap;
 	std::map<std::string,std::string> _start_line;
 	std::vector<std::string>response;
 	std::string _buffer;
 	size_t _length;
 	int _error_flag;
-	int _parser_flag;
 
 public:
 	const std::map<std::string, std::string> &getHeadMap() const;
@@ -29,9 +27,6 @@ public:
 
 	void setStartLine(const std::map<std::string, std::string> &startLine);
 
-	void setParserFlag(int parserFlag);
-
-	int getParserFlag() const;
 
 	int getErrorFlag() const;
 
@@ -51,10 +46,6 @@ public:
 
 	void setBody(const std::string &body);
 
-	const std::string &getHead() const;
-
-	void setHead(const std::string &head);
-
 	const std::string &getBuffer() const;
 
 	void setBuffer(const std::string &buffer);
@@ -62,6 +53,7 @@ public:
 	const std::vector<std::string> &getResponse() const;
 
 	void setResponse(const std::vector<std::string> &response);
+	void clear();
 };
 
 

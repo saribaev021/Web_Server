@@ -23,7 +23,7 @@ public:
 
 	bool receive(int sock_fd, Http &host);
 
-	void response(int sock_fd, const std::string &val);
+	size_t response(int sock_fd, const std::string &val, size_t);
 
 	class BadAddress : public std::exception{
 	virtual const char * what() const throw();

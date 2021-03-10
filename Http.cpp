@@ -4,7 +4,7 @@
 
 #include "Http.hpp"
 
-Http::Http() : _status("read_header"), _body(), _head(), _buffer(), _length(500), _headMap(), _start_line(), _error_flag(), _parser_flag(){}
+Http::Http() : _status("read_header"), _body(), _buffer(), _length(1000), _headMap(), _start_line(), _error_flag(){}
 
 const std::string &Http::getStatus() const {
 	return _status;
@@ -31,13 +31,6 @@ void Http::setBody(const std::string &body) {
 	_body = body;
 }
 
-const std::string &Http::getHead() const {
-	return _head;
-}
-
-void Http::setHead(const std::string &head) {
-	_head = head;
-}
 
 const std::string &Http::getBuffer() const {
 	return _buffer;
@@ -56,9 +49,6 @@ void Http::setLength(size_t length) {
 }
 
 
-int Http::getParserFlag() const {
-	return _parser_flag;
-}
 
 const std::map<std::string, std::string> &Http::getHeadMap() const {
 	return _headMap;
@@ -76,10 +66,17 @@ void Http::setStartLine(const std::map<std::string, std::string> &startLine) {
 	_start_line = startLine;
 }
 
-void Http::setParserFlag(int parserFlag) {
-	_parser_flag = parserFlag;
-}
 
 void Http::setErrorFlag(int errorFlag) {
 	_error_flag = errorFlag;
+}
+
+void Http::clear() {
+	_headMap.clear();
+	_buffer.clear();
+	_body.clear();
+	response.clear();
+	_start_line.clear();
+	_error_flag = 0;
+	_length = 500;
 }
