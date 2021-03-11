@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/11 20:20:05 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ void	pars_check_root(std::string &root)
 {
 	if (root.empty() || root == ".")
 		root = "/";
+	if (*root.rbegin() == '/')
+		root = root.substr(0, root.size()-1);
 	double_sl(root);
 }
 

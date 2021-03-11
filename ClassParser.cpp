@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClassParser.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/11 20:37:43 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ClassParser::fing_config_file()
 {
 	if (0) //error
 		exit(1);
-	this->config_addr = "/Users/ndreadno/web_server/webserv.conf";
+	this->config_addr = "webserv.conf";
 }
 
 void ClassParser::read_from_file()
@@ -256,7 +256,6 @@ void ClassParser::set_default_values()
 			adress_cat(data[i].location[j].location, data[i].root);
 			pars_check_location_root(data[i].location[j].root, data[i].root);
 			pars_check_location_max_body_size(data[i].location[j].max_body_size, data[i].max_body_size);
-			adress_cat(data[i].location[j].cgi_path, data[i].location[j].root);
 			adress_cat(data[i].location[j].upload_storage, data[i].location[j].root);
 			if (data[i].location[j].index_types.empty())
 				data[i].location[j].index_types = data[i].index_types;
