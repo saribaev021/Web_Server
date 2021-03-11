@@ -6,7 +6,7 @@
 /*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/11 21:05:11 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 01:27:03 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,32 @@ std::vector<t_server_config_data>		parser_config(void)
 	p.set_default_values(); // установка значений (дефолтные/по серверу)
 	return (p.get_data());
 }
-
+ 
+ #include <sys/time.h>
+std::string Get_local_time()
+{
+	struct timeval tv;
+	time_t t;
+	struct tm *info;
+	char buffer[64];
+ 
+	gettimeofday(&tv, NULL);
+	t = tv.tv_sec;
+  	info = localtime(&t);
+	strftime (buffer, sizeof buffer, "%a, %d %b %Y %X %Z", info);
+	std::string str = buffer;
+	return str;
+}
 int main()
 {
-	std::vector<t_server_config_data> p = parser_config();
+	// std::vector<t_server_config_data> p = parser_config();
 	int i = 0;
 	int j;
 	int k;
+
+	std::cout << Get_local_time() << std::endl;
+	return 0;
+	
 	// while (i < p.size())
 	// {
 	// 	j = 0;
