@@ -18,7 +18,9 @@ private:
 	void _controller(Client &, t_locations &, std::string&);
 	std::vector<std::string> _error_page();
 	std::string _get_remote_addr(int fd, sockaddr_in *addr, socklen_t *len);
+	std::pair<bool, std::pair<size_t, size_t> >  _checking_сorrectness_of_request(Http &http);
 	void _execute_methods(Client &client);
+	void _error_handler(Http &http, int);
 	std::pair<bool, size_t> _check_locations(const std::string &loc, const std::vector<t_locations> &locs);
 	std::pair<bool, std::string>  _check_source(const std::string &location, const std::string &source);
 	std::pair<bool, size_t> _check_methods(const std::string &method, const std::vector<std::string> &methods);
