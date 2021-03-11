@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_set_data.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 21:29:45 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/11 21:10:21 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,14 @@ std::string::iterator	&check_error_token(std::string::iterator &s, std::string::
 
 static bool set_auto(std::string str)
 {
-	if (str.length() < 1)
+	if (str.length() < 10)
 		return (false);
-	size_t pos = str.find("on");
-	if (pos != std::string::npos)
+	str = ft_trim_spases(my_substr(str.begin() + 10, str.end()));
+	if (str == "on")
 		return (true);
+	else if (str == "off")
+		return (false);
+	ft_exit(100);
 	return (false);
 }
 
