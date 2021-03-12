@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 12:44:30 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:34:12 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,6 @@ void ClassParser::set_default_values()
 			add_last_slash(data[i].location[j].location);
 			pars_check_location_root(data[i].location[j].root, data[i].root);
 			add_last_slash(data[i].location[j].upload_storage);
-			add_first_slash(data[i].location[j].upload_storage);
 			pars_check_cgi(data[i].location[j].cgi_path, data[i].location[j].cgi_extensions);
 			j++;
 		}
