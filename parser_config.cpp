@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 15:40:04 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:18:59 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,37 +66,37 @@ int main()
 	int k;
 
 	// // std::cout << Get_local_time() << std::endl;
-	std::cout << gen_auto_page(std::string("/Users/fbarbera/21/"), std::string("21/")) << std::endl;
-	// while (i < p.size())
-	// {
-	// 	j = 0;
-	// 	std::cout << "_________serv___________"  << std::endl;
-	// 	for (k = 0; k < p[i].server_name.size(); k++)
-	// 		std::cout << p[i].server_name[k] << "\t\t\t server_name" << std::endl;
-	// 	std::cout << p[i].ip << "\t\t\t ip" << std::endl;
-	// 	std::cout << p[i].port << "\t\t\t\t port"<< std::endl;
-	// 	std::cout << p[i].root << "\t\t\t root" << std::endl;
-	// 	std::cout << p[i].max_body_size << "\t\t max_size"<< std::endl;
-	// 	for (k = 0; k < p[i].index_types.size(); k++)
-	// 		std::cout << p[i].index_types[k] << "\t\t\t index" << std::endl;
-	// 	for(std::map<int, std::string>::iterator it = p[i].error_page.begin(); it != p[i].error_page.end(); ++it)
-	// 	{
-	// 		std::cout << it->first << " : " << it->second << std::endl;///вывод на экран
-	// 	}
-	// 	while (j < p[i].location.size())
-	// 	{	
-	// 		std::cout << "_________loc___________" << j  << std::endl;
-	// 		std::cout << p[i].location[j].location << "\t\t\t location" << std::endl;
-	// 		std::cout << p[i].location[j].root << "\t\t\t root" << std::endl;
-	// 		std::cout << p[i].location[j].autoindex << "\t\t\t autoindex"<< std::endl;
-	// 		for (k = 0; k < p[i].location[j].method.size(); k++) 
-	// 			std::cout << p[i].location[j].method[k] << "\t\t\t method "<< std::endl;
-	// 		for (k = 0; k < p[i].location[j].cgi_extensions.size(); k++)
-	// 			std::cout << p[i].location[j].cgi_path[k] << " : " << p[i].location[j].cgi_extensions[k] << "\t\t cji"<< std::endl;
-	// 		std::cout << p[i].location[j].upload_storage << "\t\t\t storage"<< std::endl;
-	// 		j++;
-	// 	}
-	// 	i++;
-	// }
+	// std::cout << gen_auto_page(std::string("/Users/fbarbera/21/"), std::string("21/")) << std::endl;
+	while (i < p.size())
+	{
+		j = 0;
+		std::cout << "_________serv___________"  << std::endl;
+		for (k = 0; k < p[i].server_name.size(); k++)
+			std::cout << p[i].server_name[k] << "\t\t\t server_name" << std::endl;
+		std::cout << p[i].ip << "\t\t\t ip" << std::endl;
+		std::cout << p[i].port << "\t\t\t\t port"<< std::endl;
+		std::cout << p[i].root << "\t\t\t root" << std::endl;
+		std::cout << p[i].max_body_size << "\t\t max_size"<< std::endl;
+		for (k = 0; k < p[i].index_types.size(); k++)
+			std::cout << p[i].index_types[k] << "\t\t\t index" << std::endl;
+		for(std::map<int, std::string>::iterator it = p[i].error_page.begin(); it != p[i].error_page.end(); ++it)
+		{
+			std::cout << it->first << " : " << it->second << std::endl;///вывод на экран
+		}
+		while (j < p[i].location.size())
+		{	
+			std::cout << "_________loc___________" << j  << std::endl;
+			std::cout << p[i].location[j].location << "\t\t\t location" << std::endl;
+			std::cout << p[i].location[j].root << "\t\t\t root" << std::endl;
+			std::cout << p[i].location[j].autoindex << "\t\t\t autoindex"<< std::endl;
+			for (k = 0; k < p[i].location[j].method.size(); k++) 
+				std::cout << p[i].location[j].method[k] << "\t\t\t method "<< std::endl;
+			for (k = 0; k < p[i].location[j].cgi_extensions.size(); k++)
+				std::cout << p[i].location[j].cgi_path[k] << " : " << p[i].location[j].cgi_extensions[k] << "\t\t cji"<< std::endl;
+			std::cout << p[i].location[j].upload_storage << "\t\t\t storage"<< std::endl;
+			j++;
+		}
+		i++;
+	}
 	return 0;
 }

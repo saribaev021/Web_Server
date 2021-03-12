@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 12:36:16 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:28:40 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,14 @@ void	adress_cat(std::string &location, std::string root)
 
 void pars_check_location_root(std::string &root, std::string server_root)
 {
+	if (!root.empty() && root == ".")
+		root = "/";
 	if (root.empty())
 		root = server_root;
-	pars_check_root(root);
+	else if (root[0] == '/')
+		root = server_root + root;
+	add_last_slash(root);
+	double_sl(root);
 }
 
 void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size)
