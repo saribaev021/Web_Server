@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_set_data.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/11 21:10:21 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 13:23:11 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ static void iset_data(t_server_config_data &s)
 	s.port = set_port(copy);
 	s.server_name.push_back(s.ip);
 	s.error_page = set_error_page_map(s.error_page_v, s.root);
+	s.all_method = set_all_method();
 	int j = 0;
 	while (j < s.location.size())
 	{
@@ -188,21 +189,14 @@ static void iset_data(t_server_config_data &s)
 			s.location[j].root = s.root;
 		else
 			s.location[j].root = split_string(s.location[j].root, "root ");
-		if (s.location[j].index_types.empty())
-			s.location[j].index_types = s.index_types;
-		else
-			s.location[j].index_types = split_vector(s.location[j].index_types[0], "index ");
-		s.location[j].all_method = set_all_method();
 		if (s.location[j].method.empty())
 			ft_exit(NO_METHOD);
 		else
 			s.location[j].method = split_vector(s.location[j].method[0], "method ");
-		if (check_method_pars(s.location[j].method, s.location[j].all_method) == false)
+		if (check_method_pars(s.location[j].method, s.all_method) == false)
 			ft_exit(UN_METHOD);
-		if (s.location[j].cgi_path.empty())
-			s.location[j].cgi_path = "";
-		else
-			s.location[j].cgi_path = split_string(s.location[j].cgi_path, "cgi_path ");
+		if (!s.location[j].cgi_path.empty())
+			s.location[j].cgi_path = split_vector(s.location[j].cgi_path[0], "cgi_path ");
 
 		if (!s.location[j].cgi_extensions.empty())
 			s.location[j].cgi_extensions = split_vector(s.location[j].cgi_extensions[0], "cgi_extensions ");
@@ -226,11 +220,10 @@ t_server_config_data	pars_data_for_servers(std::string str)
 		s.location[j].location = set_string_p(s.location[j].full_loc, "location ");
 		s.location[j].root = set_string_p(s.location[j].full_loc, "root ");
 		s.location[j].autoindex = set_auto(set_string_p(s.location[j].full_loc, "autoindex "));
-		s.location[j].index_types = set_vector(s.location[j].full_loc, "index ");
 		s.location[j].method = set_vector(s.location[j].full_loc, "method ");
-		s.location[j].max_body_size = set_size(set_string_p(s.location[j].full_loc, "max_body_size "));
+		// s.location[j].max_body_size = set_size(set_string_p(s.location[j].full_loc, "max_body_size "));
 		s.location[j].cgi_extensions = set_vector(s.location[j].full_loc, "cgi_extensions ");
-		s.location[j].cgi_path = set_string_p(s.location[j].full_loc, "cgi_path ");
+		s.location[j].cgi_path = set_vector(s.location[j].full_loc, "cgi_path ");
 		s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
 		iterator = s.location[j].full_loc.begin() + 7;
 		if (check_error_token(iterator, s.location[j].full_loc.end()) != s.location[j].full_loc.end())
@@ -244,6 +237,7 @@ t_server_config_data	pars_data_for_servers(std::string str)
 	s.usr = set_string_p(str, "usr ");
 	s.error_page_v = set_error_page(str, "error_page ");
 	s.max_body_size = set_size(set_string_p(str, "max_body_size "));
+	s.mime_map = gen_mime();
 	iterator = str.begin() + 7;
 	if (check_error_token(iterator, str.end()) != str.end())
 		ft_exit(ERROR_TOKEN, iterator);

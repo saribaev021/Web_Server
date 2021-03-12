@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 01:27:03 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 15:40:04 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,35 @@ std::string Get_local_time()
 	std::string str = buffer;
 	return str;
 }
+
+std::string f(std::string s)
+{
+	std::string str;
+	int i;
+	for (i = 0; i < s.length(); i++)
+	{
+		if (ft_spases_p(s[i]))
+			break;
+	}
+	while (ft_spases_p(s[i]))
+		i++;
+	while (i < s.length())
+	{
+	 str += s[i];
+		i++;
+	}
+	return str;
+}
+
 int main()
 {
-	// std::vector<t_server_config_data> p = parser_config();
+	std::vector<t_server_config_data> p = parser_config();
 	int i = 0;
 	int j;
 	int k;
 
-	std::cout << Get_local_time() << std::endl;
-	return 0;
-	
+	// // std::cout << Get_local_time() << std::endl;
+	std::cout << gen_auto_page(std::string("/Users/fbarbera/21/"), std::string("21/")) << std::endl;
 	// while (i < p.size())
 	// {
 	// 	j = 0;
@@ -69,16 +88,12 @@ int main()
 	// 		std::cout << "_________loc___________" << j  << std::endl;
 	// 		std::cout << p[i].location[j].location << "\t\t\t location" << std::endl;
 	// 		std::cout << p[i].location[j].root << "\t\t\t root" << std::endl;
-	// 		std::cout << p[i].location[j].max_body_size << "\t\t\t max_size"<< std::endl;
 	// 		std::cout << p[i].location[j].autoindex << "\t\t\t autoindex"<< std::endl;
 	// 		for (k = 0; k < p[i].location[j].method.size(); k++) 
 	// 			std::cout << p[i].location[j].method[k] << "\t\t\t method "<< std::endl;
 	// 		for (k = 0; k < p[i].location[j].cgi_extensions.size(); k++)
-	// 			std::cout << p[i].location[j].cgi_extensions[k] << "\t\t\t extention"<< std::endl;
-	// 		std::cout << p[i].location[j].cgi_path << "\t\t\t cgi path" << std::endl;
-	// 		std::cout << p[i].location[j].upload_storage << "\t\t\t storage"<< std::endl;			
-	// 		for (k = 0; k < p[i].location[j].index_types.size(); k++)
-	// 			std::cout << p[i].location[j].index_types[k] << "\t\t\t index" << std::endl;
+	// 			std::cout << p[i].location[j].cgi_path[k] << " : " << p[i].location[j].cgi_extensions[k] << "\t\t cji"<< std::endl;
+	// 		std::cout << p[i].location[j].upload_storage << "\t\t\t storage"<< std::endl;
 	// 		j++;
 	// 	}
 	// 	i++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/11 20:20:05 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 12:36:16 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,9 @@ void	adress_cat(std::string &location, std::string root)
 
 void pars_check_location_root(std::string &root, std::string server_root)
 {
-	root = server_root; //?
+	if (root.empty())
+		root = server_root;
+	pars_check_root(root);
 }
 
 void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size)
@@ -123,6 +125,17 @@ void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned lo
 	if (max_body_size == 0)
 		max_body_size = server_max_body_size;
 }
+
+void	pars_check_cgi(std::vector<std::string> path, std::vector<std::string> extensions)
+{
+	if (path.size() != extensions.size())
+		ft_exit(PATH_EXTEN);
+	for (int i = 0; i < extensions.size(); i++)
+		if (extensions[i].length() < 2 || extensions[i][0] != '.')
+			ft_exit(EXTENTION_DOT);
+}
+
+
 // void	pars_check_max_body_size(data[i].max_body_size);
 // void	adress_cat(data[i].location[j].location);
 // void	pars_check_location_root(data[i].location[j].root, data[i].root);
