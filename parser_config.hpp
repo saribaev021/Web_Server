@@ -21,7 +21,7 @@
 # include <map>
 # include <string>
 # include <fstream>
-
+// serv_root/tmp/test
 typedef struct	s_locations
 {
 	std::string					full_loc; //мусорная строка для отлова лишнего
@@ -31,8 +31,8 @@ typedef struct	s_locations
 	bool						autoindex; //+ (по дефолту off)
 	std::vector<std::string>	method; //+ (если нет методов/не сущетвующий - выдаю ошибку)
 	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
-	std::vector<std::string>	cgi_extensions; // если нет, то (не знаю???? )
-    std::string					cgi_path; //+ если пусто то cgi не поддерживается
+	std::vector<std::string>	cgi_extensions; // если нет, то (не знаю???? ).php .py
+    std::string					cgi_path; //+ если пусто то cgi не поддерживается /user/bin/php-cgi
     std::string					upload_storage; //+ путь куда исполнить медот PUT (если нет метода пут - ошибка?)
 	std::vector<std::string>	index_types; //+ если не указано - дефолт по серверу
 }				t_locations;
