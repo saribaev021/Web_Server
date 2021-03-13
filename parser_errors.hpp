@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:24:12 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 20:41:39 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 12:22:59 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # define MAX_SIZE_ERROR 9
 # define NO_BRAKET 10
 # define ERROR_PAGE_ERROR 11
+# define PATH_EXTEN 12
+# define EXTENTION_DOT 13
 
 void	ft_exit(int error);
 void	ft_exit(int error, std::string::iterator i);

@@ -156,6 +156,7 @@ bool RequestParser::_check_validation_start_line() {
 		_error_flag = 400;
 		return false;
 	}
+	_start_line["path_info"] = _start_line.find("location")->second + _start_line.find("source")->second;
 	return true;
 }
 bool RequestParser::_parser_start_line() {

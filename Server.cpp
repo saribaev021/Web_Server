@@ -4,7 +4,8 @@
 
 #include "Server.hpp"
 
-Server::Server(const t_server_config_data &config) : _config(config), _client() {
+
+Server::Server(const t_server_config_data &config) : _config(config), _client(), generate_headers(config.mime_map){
 	_socket.setAddres(config.ip);
 	_socket.setPort(config.port);
 	try {
@@ -38,16 +39,37 @@ int Server::getSocketServer() const {
 const std::vector<Client> &Server::getClient() const {
 	return _client;
 }
-
-void Server::_controller(Client &client, t_locations &locations, std::string &method)
+std::vector<std::string> Server::_get_method(Http &http) {
+	std::vector<std::string>response(2, "");
+	std::string body;
+	std::string line;
+	std::string header;
+	std::string target_file = http.getStartLine().find("change_location")->second;
+	target_file += http.getStartLine().find("source")->second;
+	std::ifstream in(target_file);
+	if (in.is_open()){
+		while (std::getline(in, line)){
+			body += line;
+			if (!in.eof()){
+				body += "\n";
+			}
+		}
+		header = generate_headers.get_status("200");
+		header += generate_headers.get_server();
+		header += generate_headers.get_server_date();
+		header += generate_headers.get_content_type(_get_extensions( http.getStartLine().find("source")->second));
+		header += generate_headers.get_content_length(std::to_string(body.length()));
+		header += generate_headers.get_last_modified(target_file);
+		header += "\r\n";
+		response[0] = header;
+		response[1] = body;
+	}
+	return response;
+}
+void Server::_controller(Client &client, t_locations &locations, std::string &method, std::pair<bool, size_t>p)
 {
 	Http http = client.getHttp();
-//	if (http.getStatus() == "error"){
-//		http.setResponse(_error_page());
-//	}else{
-//		if (method == "HEAD"){
-//
-//		}
+	if (p.first && method != "PUT"){
 		std::vector<std::string>response;
 		response.push_back("HTTP/1.1 200 OK\r\n"
 						   "Server: nginx/1.14.2\r\n"
@@ -61,7 +83,10 @@ void Server::_controller(Client &client, t_locations &locations, std::string &me
 		response.push_back("hello\n");
 		http.setResponse(response);
 		http.setStatus("write");
-//	}
+	}else{
+		http.setResponse(_get_method(http));
+		http.setStatus("write");
+	}
 	client.setHttp(http);
 }
 
@@ -93,7 +118,7 @@ void Server::recive(int index_client) {
 
 std::vector<std::string> Server::_error_page() {
 	std::vector<std::string> response;
-	response.push_back(std::string("HTTP/1.1 400 Bad Request\r\n"
+	response.push_back(std::string("HTTP/1.1 404 Not Found\r\n"
 								   "Server: nginx/1.14.2\r\n"
 								   "Date: Sat, 06 Mar 2021 17:09:06 GMT\r\n"
 								   "Content-Type: text/html\r\n"
@@ -140,7 +165,9 @@ void Server::_execute_methods(Client &client) {
 		http.setStatus("write");
 		if ((p = _checking_сorrectness_of_request(http)).first){
 			client.setHttp(http);
-			_controller(client, _config.location[p.second.first],_config.location[p.second.first].method[p.second.second]);
+			t_locations loc = _config.location[p.second.first];
+			std::string method = loc.method[p.second.second];
+			_controller(client, loc, method, who_execute(loc, method, http.getStartLine().find("source")->second));
 			return;
 		}
 	}
@@ -200,26 +227,45 @@ void Server::_error_handler(Http &http, int cod_error) {
 }
 
 std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_request(Http &http) {
-	std::map<std::string, std::string> m_start_line = http.getStartLine();
-	m_start_line["location"].insert(0, _config.root);
-	http.setStartLine(m_start_line);
-	std::map<std::string, std::string>::const_iterator it = http.getStartLine().find("location");
+	std::string location = http.getStartLine().find("location")->second;
+	location.insert(0, _config.root);
 	std::pair<bool, size_t> p_method(false, 0);
 	std::pair<bool, std::string> p_source(false, "");
 	std::pair<bool, size_t> p_loc(false, 0);
-	if (!(p_loc = _check_locations(it->second, _config.location)).first) {
+	if (!(p_loc = _check_locations(location, _config.location)).first) {
 		return std::make_pair(false, std::make_pair(404, 0));
 	}
-	it = http.getStartLine().find("method");
-	if (!(p_method = _check_methods(it->second, _config.location[p_loc.second].method)).first){
+	if (!(p_method = _check_methods(http.getStartLine().find("method")->second, _config.location[p_loc.second].method)).first){
 		return std::make_pair(false, std::make_pair(405, 0));
 	}
-	if ((p_source = _check_source(http.getStartLine().find("location")->second,
-								  http.getStartLine().find("source")->second)).first) {
+	if ((p_source = _check_source(_config.location[p_loc.second].root, http.getStartLine().find("source")->second)).first) {
+		std::map<std::string, std::string>m_start_line = http.getStartLine();
 		m_start_line["source"] = p_source.second;
+		m_start_line["change_location"] = _config.location[p_loc.second].root;
+		m_start_line["path_info"].insert(0,m_start_line["change_location"] + m_start_line["source"]);
 		http.setStartLine(m_start_line);
 		return std::make_pair(true, std::make_pair(p_loc.second, p_method.second));
 	}else{
 		return std::make_pair(false, std::make_pair(404, 0));
 	}
+}
+
+std::pair<bool, size_t> Server::who_execute(t_locations &loc, std::string &method, std::string execute) {
+	size_t pos;
+	std::vector<std::string>extensions = loc.cgi_extensions;
+	for (size_t  i = 0; i < extensions.size(); ++i) {
+		if ((pos = execute.find(extensions[i])) != std::string::npos && execute.substr(pos) == extensions[i] && execute.length() != extensions[i].length()){
+			return std::make_pair(true, i);
+		}
+	}
+	return std::make_pair(false, 0);;
+}
+
+std::string Server::_get_extensions(const std::string &str) {
+	for (size_t i = str.length(); i > 0; --i) {
+		if (str[i] == '.'){
+			return str.substr(i);
+		}
+	}
+	return std::string();
 }
