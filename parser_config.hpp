@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 21:18:37 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 15:03:28 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,12 @@ typedef struct	s_locations
 	std::string					full_loc; //мусорная строка для отлова лишнего
 	std::string					location; //+
 	std::string					root; //корневая папка локейшена (если нет в клнфиге заменяю на дефолтный серверный рут)
-	unsigned long				max_body_size; // заменяю на серверный (если нет в кофиге)
+	// unsigned long				max_body_size; // заменяю на серверный (если нет в кофиге) // удалить
 	bool						autoindex; //+ (по дефолту off)
 	std::vector<std::string>	method; //+ (если нет методов/не сущетвующий - выдаю ошибку)
-	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
-	std::vector<std::string>	cgi_extensions; // если нет, то (не знаю???? ).php .py
-    std::string					cgi_path; //+ если пусто то cgi не поддерживается /user/bin/php-cgi
+	std::vector<std::string>	cgi_extensions; // если нет, то (не знаю???? )
+    std::vector<std::string>	cgi_path; //+ если пусто то cgi не поддерживается
     std::string					upload_storage; //+ путь куда исполнить медот PUT (если нет метода пут - ошибка?)
-	std::vector<std::string>	index_types; //+ если не указано - дефолт по серверу
 }				t_locations;
 
 typedef struct	s_server_config_data
@@ -48,7 +46,10 @@ typedef struct	s_server_config_data
 	std::map<int, std::string>	error_page; 
 	std::vector<std::string>	index_types; //+
     unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
+	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
 	std::string					usr;
+	std::map<std::string, std::string> mime_map;
+
 }				t_server_config_data;
 
 int						ft_skip_spases(std::string::iterator i);
@@ -79,5 +80,9 @@ void	pars_check_location_root(std::string &root, std::string server_root);
 void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size);
 std::vector<std::string> ft_split_string_to_vector(std::string str, char ch);
 bool ft_isnumstring(std::string str);
-
+void	pars_check_cgi(std::vector<std::string> cgi_path, std::vector<std::string> cgi_extensions);
+void	add_last_slash(std::string &str);
+const std::map<std::string, std::string> gen_mime();
+void	add_first_slash(std::string &str);
+std::string gen_auto_page(std::string path, std::string location);
 #endif

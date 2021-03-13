@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 20:14:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 20:47:22 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 12:43:35 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,4 +231,16 @@ bool ft_isnumstring(std::string str)
 			return false;
 	}
 	return true;
+}
+
+void	add_last_slash(std::string &str)
+{
+	if (*str.rbegin() != '/')
+		str+='/';
+}
+
+void	add_first_slash(std::string &str)
+{
+	if (*str.begin() != '/')
+		str = "/" + str;
 }

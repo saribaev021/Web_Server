@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:23:42 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/10 21:30:34 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/12 12:26:19 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,13 @@ void ft_exit(int error)
 		std::cout << "Braket errors" << std::endl;			break;
 	case ERROR_PAGE_ERROR:
 		std::cout << "Unknown argument in error_page"
-										 << std::endl;		break;
+										<< std::endl;		break;
+	case PATH_EXTEN:
+		std::cout << "The number of paths is not equal to the number of extensions"
+										<< std::endl;		break;
+	case EXTENTION_DOT:
+		std::cout << "Еhe extension must start with a dot"
+										<< std::endl;		break;
 	default:
 		std::cout << "Error unknown error\n";				break;
 	}
