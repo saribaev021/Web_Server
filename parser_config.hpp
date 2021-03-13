@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 15:03:28 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 18:25:14 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define PARSER_CONFIG_HPP
 
 # include "parser_errors.hpp"
-
+# include "ClassGenErrorPage.hpp"
 # include <iostream>
 # include <vector>
 # include <list>

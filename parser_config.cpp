@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 17:34:42 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 18:25:47 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,15 @@ std::string Get_local_time()
 int main()
 {
 	std::vector<t_server_config_data> p = parser_config();
-	int i = 0;
-	int j;
-	int k;
+	// int i = 0;
+	// int j;
+	// int k;
 
-	std::cout << Get_local_time() << std::endl;
+	// std::cout << Get_local_time() << std::endl;
+	ClassGenErrorPage er(p[0]);
+	
+	
+	
 	// std::cout << gen_auto_page(std::string("/Users/fbarbera/21/"), std::string("21/")) << std::endl;
 	// while (i < p.size())
 	// {

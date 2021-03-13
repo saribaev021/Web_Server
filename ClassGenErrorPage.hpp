@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClassGenErrorPage.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:38:39 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/11 20:05:40 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 18:20:03 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,14 @@ class ClassGenErrorPage
 private:
 	std::string s1 = "<html><head><title>ERROR PAGE</title></head><body><br /><br /><br /><p align=\"center\" style=\"color:#ff4444;font-size:80px\"> <b>ERROR ";
 	std::string s2 = ".</b></p></body></html>";
-public:
+	s_server_config_data data;
+	int found_error(int error, std::string &error_page);
 	ClassGenErrorPage();
+public:
+	ClassGenErrorPage(s_server_config_data data);
+	~ClassGenErrorPage();
 	std::string generate(int error);
 	std::string generate(std::string error);
-	~ClassGenErrorPage();
 };
-
-ClassGenErrorPage::ClassGenErrorPage(/* args */)
-{
-}
-
-ClassGenErrorPage::~ClassGenErrorPage()
-{
-}
-
 
 # endif
