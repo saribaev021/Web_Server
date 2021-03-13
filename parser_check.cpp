@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:48:28 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:54:26 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,57 @@ void	pars_check_cgi(std::vector<std::string> &path, std::vector<std::string> ext
 	}
 }
 
+static const std::string base64_chars =
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+static inline bool is_base64(unsigned char c) {
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+std::string base64_decode(std::string const& encoded_string)
+{
+	int in_len = encoded_string.size();
+	int i = 0;
+	int j = 0;
+	int in_ = 0;
+	unsigned char char_array_4[4], char_array_3[3];
+	std::string ret;
+
+	while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+	char_array_4[i++] = encoded_string[in_]; in_++;
+	if (i ==4) {
+		for (i = 0; i <4; i++)
+		char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+		char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+		for (i = 0; (i < 3); i++)
+		ret += char_array_3[i];
+		i = 0;
+	}
+	}
+
+	if (i) {
+	for (j = i; j <4; j++)
+		char_array_4[j] = 0;
+
+	for (j = 0; j <4; j++)
+		char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+	char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+	char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+	char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+	for (j = 0; (j < i - 1); j++)
+		ret += char_array_3[j];
+	}
+	return ret;
+}
+
 void	pars_check_auth(s_locations &location)
 {
 	if (!location.auth)
@@ -170,7 +221,7 @@ void	pars_check_auth(s_locations &location)
     location.auth_data.login = my_substr(location.auth_data.login.begin(), my_find(location.auth_data.login, ":"));
 	if (location.auth_data.password.empty() || location.auth_data.login.empty() || location.auth_data.AuthType != "Basic")
 		ft_exit(NO_VALID_AUTH_FILE);
-	
+	location.auth_data.password = base64_decode(location.auth_data.password);
 	in.close();
 	
 }
