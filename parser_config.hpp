@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 19:38:48 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:09:49 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,14 @@
 # include <string>
 # include <fstream>
 
+
+typedef struct s_auth
+{
+	std::string	AuthType;
+	std::string login;
+	std::string password;
+}				t_auth;
+
 typedef struct	s_locations
 {
 	std::string					full_loc; //мусорная строка для отлова лишнего
@@ -33,6 +41,9 @@ typedef struct	s_locations
 	std::vector<std::string>	cgi_extensions; // если нет, то (не знаю???? )
     std::vector<std::string>	cgi_path; //+ если пусто то cgi не поддерживается
     std::string					upload_storage; //+ путь куда исполнить медот PUT (если нет метода пут - ошибка?)
+	std::string					path_to_auth;
+	t_auth						auth_data;
+	bool						auth; 
 }				t_locations;
 
 typedef struct	s_server_config_data
@@ -47,7 +58,6 @@ typedef struct	s_server_config_data
 	std::vector<std::string>	index_types; //+
     unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
 	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
-	std::string					usr;
 	std::map<std::string, std::string> mime_map;
 }				t_server_config_data;
 
@@ -69,19 +79,22 @@ unsigned long long 		set_size(std::string str);
 std::vector<std::string> set_vector(std::string &str, std::string found);
 t_server_config_data	pars_data_for_servers(std::string str);
 std::vector<std::string> set_error_page(std::string &str, std::string found);
-void	pars_check_name(std::vector<std::string> server_name);
-void	pars_check_ip(std::string ip);
-void	pars_check_port(std::string port);
-void	pars_check_root(std::string &root);
-void	pars_check_max_body_size(unsigned long &size);
-void	adress_cat(std::string &location, std::string root);
-void	pars_check_location_root(std::string &root, std::string server_root);
-void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size);
+void					pars_check_name(std::vector<std::string> server_name);
+void					pars_check_ip(std::string ip);
+void					pars_check_port(std::string port);
+void					pars_check_root(std::string &root);
+void					pars_check_max_body_size(unsigned long &size);
+void					adress_cat(std::string &location, std::string root);
+void					pars_check_location_root(std::string &root, std::string server_root);
+void					pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size);
 std::vector<std::string> ft_split_string_to_vector(std::string str, char ch);
-bool ft_isnumstring(std::string str);
-void	pars_check_cgi(std::vector<std::string> &cgi_path, std::vector<std::string> cgi_extensions);
-void	add_last_slash(std::string &str);
+bool					ft_isnumstring(std::string str);
+void					pars_check_cgi(std::vector<std::string> &cgi_path, std::vector<std::string> cgi_extensions);
+void					add_last_slash(std::string &str);
 std::map<std::string, std::string> gen_mime();
-void	add_first_slash(std::string &str);
+void					add_first_slash(std::string &str);
 std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, std::string root);
+std::map<std::string, std::string> gen_http_code();
+void	pars_check_auth(s_locations &location);
+
 #endif

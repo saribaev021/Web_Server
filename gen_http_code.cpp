@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/13 20:18:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 20:20:19 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 20:28:44 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ std::map<std::string, std::string> gen_http_code()
 	std::map<std::string, std::string> m;
 	for (int i = 0; i < v2.size(); i++)
 	{
+		v2[i] = "HTTP/1.1 " + v1[i] + " " + v2[i] + "\r\n";
 		m.insert(std::pair<std::string, std::string>(v1[i], v2[i]));
 	}
 	return m;
 }
+//"HTTP/1.1 404 Not Found\r\n";

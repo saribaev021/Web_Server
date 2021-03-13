@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 20:18:44 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:34:07 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,21 @@ std::string Get_local_time()
 }
 
 
-
 int main()
 {
-	// std::vector<t_server_config_data> p = parser_config();
+	// std::map<std::string, std::string> m;
+	// m = gen_http_code();
+
+	// 	for(std::map<std::string, std::string>::iterator it = m.begin(); it != m.end(); ++it)
+	// 	{
+	// 		std::cout << it->first << " : " << it->second;///вывод на экран
+	// 	}
+	
+	std::vector<t_server_config_data> p = parser_config();
+
+	std::cout << p[0].location[0].auth_data.AuthType << std::endl;
+	std::cout << p[0].location[0].auth_data.login << std::endl;
+	std::cout << p[0].location[0].auth_data.password << std::endl;
 	// std::cout << Get_local_time() << std::endl;
 
 	

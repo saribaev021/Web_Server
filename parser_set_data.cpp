@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 19:19:21 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:31:26 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,12 @@ static void iset_data(t_server_config_data &s)
 			s.location[j].upload_storage = "";
 		else
 			s.location[j].upload_storage = split_string(s.location[j].upload_storage, "upload_storage ");
+		if (!s.location[j].path_to_auth.empty())
+		{
+			s.location[j].path_to_auth = split_string(s.location[j].path_to_auth, "auth_basic_user_file ");
+			if (!s.location[j].path_to_auth.empty())
+				s.location[j].auth = true;
+		}
 		j++;
 	}
 }
@@ -224,6 +230,7 @@ t_server_config_data	pars_data_for_servers(std::string str)
 		s.location[j].cgi_extensions = set_vector(s.location[j].full_loc, "cgi_extensions ");
 		s.location[j].cgi_path = set_vector(s.location[j].full_loc, "cgi_path ");
 		s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
+		s.location[j].path_to_auth = set_string_p(s.location[j].full_loc, "auth_basic_user_file ");
 		iterator = s.location[j].full_loc.begin() + 7;
 		if (check_error_token(iterator, s.location[j].full_loc.end()) != s.location[j].full_loc.end())
 			ft_exit(ERROR_TOKEN, iterator);
@@ -233,7 +240,6 @@ t_server_config_data	pars_data_for_servers(std::string str)
 	s.index_types = set_vector(str, "index ");
 	s.root = set_string_p(str, "root ");
 	s.ip = set_string_p(str, "listen ");
-	s.usr = set_string_p(str, "usr ");
 	s.error_page_v = set_error_page(str, "error_page ");
 	s.max_body_size = set_size(set_string_p(str, "max_body_size "));
 	s.mime_map = gen_mime();

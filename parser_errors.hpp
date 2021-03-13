@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:24:12 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 12:22:59 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:23:50 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@
 # define ERROR_PAGE_ERROR 11
 # define PATH_EXTEN 12
 # define EXTENTION_DOT 13
-
+# define AUTH_PATH 14
+# define NO_VALID_AUTH_FILE 15
 void	ft_exit(int error);
 void	ft_exit(int error, std::string::iterator i);
+void	ft_exit(int error, std::string s);
 
 #endif

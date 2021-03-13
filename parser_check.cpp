@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 19:38:17 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:48:28 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,37 @@ void	pars_check_cgi(std::vector<std::string> &path, std::vector<std::string> ext
 		add_last_slash(path[i]);
 	}
 }
+
+void	pars_check_auth(s_locations &location)
+{
+	if (!location.auth)
+		return ;
+	std::string line;
+	std::string::iterator i;
+    std::ifstream in(location.path_to_auth);
+    if (in.is_open())
+    {
+        while (getline(in, line))
+		{
+			if ((i = my_find(line, "AuthType "))!= line.end())
+				location.auth_data.AuthType = my_substr(i + 9, line.end());
+			else if ((i = my_find(line, ":"))!= line.end())
+				location.auth_data.login = line;
+			else
+				ft_exit(NO_VALID_AUTH_FILE);
+		}
+    }
+	else
+		ft_exit(AUTH_PATH, location.path_to_auth);
+	location.auth_data.password = location.auth_data.login.substr(location.auth_data.login.find(':') + 1, location.auth_data.login.length());
+    location.auth_data.login = my_substr(location.auth_data.login.begin(), my_find(location.auth_data.login, ":"));
+	if (location.auth_data.password.empty() || location.auth_data.login.empty() || location.auth_data.AuthType != "Basic")
+		ft_exit(NO_VALID_AUTH_FILE);
+	
+	in.close();
+	
+}
+
 
 
 // void	pars_check_max_body_size(data[i].max_body_size);
