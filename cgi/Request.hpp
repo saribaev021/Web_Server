@@ -10,7 +10,7 @@
 
 std::vector<std::string> requestHead(const Client &client, t_server_config_data config, t_locations locations) {
 	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/Desktop/ndreadno/cgi/test/test.php");
+	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
 	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
 				client.getHttp().getBody());
 	executor.pipeFd();
@@ -28,7 +28,7 @@ std::vector<std::string> requestHead(const Client &client, t_server_config_data 
 
 std::vector<std::string> requestGet(const Client &client, t_server_config_data config, t_locations locations) {
 	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/Desktop/ndreadno/cgi/test/test.php");
+	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
 	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
 				client.getHttp().getBody());
 	executor.pipeFd();
@@ -46,7 +46,7 @@ std::vector<std::string> requestGet(const Client &client, t_server_config_data c
 
 std::vector<std::string> requestPost(const Client &client, t_server_config_data config, t_locations locations) {
 	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/Desktop/ndreadno/cgi/test/test.php");
+	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
 	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
 					  client.getHttp().getBody());
 	executor.pipeFd();
@@ -66,7 +66,7 @@ std::vector<std::string> requestPost(const Client &client, t_server_config_data 
 
 std::vector<std::string> requestPut(const Client &client, t_server_config_data config, t_locations locations) {
 	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/Desktop/ndreadno/cgi/test/test.php");
+	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
 	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
 					  client.getHttp().getBody());
 	executor.pipeFd();
