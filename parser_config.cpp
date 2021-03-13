@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:34:07 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 22:00:10 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int main()
 	std::cout << p[0].location[0].auth_data.AuthType << std::endl;
 	std::cout << p[0].location[0].auth_data.login << std::endl;
 	std::cout << p[0].location[0].auth_data.password << std::endl;
+	std::cout << p[0].location[0].auth_data.password_64 << std::endl;
 	// std::cout << Get_local_time() << std::endl;
 
 	

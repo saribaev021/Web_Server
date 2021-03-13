@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:54:26 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:59:44 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,7 @@ void	pars_check_auth(s_locations &location)
     location.auth_data.login = my_substr(location.auth_data.login.begin(), my_find(location.auth_data.login, ":"));
 	if (location.auth_data.password.empty() || location.auth_data.login.empty() || location.auth_data.AuthType != "Basic")
 		ft_exit(NO_VALID_AUTH_FILE);
+	location.auth_data.password_64 = location.auth_data.password;
 	location.auth_data.password = base64_decode(location.auth_data.password);
 	in.close();
 	

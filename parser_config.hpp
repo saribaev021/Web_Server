@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:09:49 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:59:21 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_auth
 	std::string	AuthType;
 	std::string login;
 	std::string password;
+	std::string password_64;
 }				t_auth;
 
 typedef struct	s_locations
