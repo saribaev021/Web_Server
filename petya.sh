@@ -1,2 +1,2 @@
-clang++ parser_*.cpp ClassParser.cpp gen_auto_page.cpp
+clang++ parser_*.cpp ClassParser.cpp ClassGenErrorPage.cpp
 ./a.out

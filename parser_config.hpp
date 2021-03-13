@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 18:25:14 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 19:38:48 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ void	pars_check_location_root(std::string &root, std::string server_root);
 void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned long server_max_body_size);
 std::vector<std::string> ft_split_string_to_vector(std::string str, char ch);
 bool ft_isnumstring(std::string str);
-void	pars_check_cgi(std::vector<std::string> cgi_path, std::vector<std::string> cgi_extensions);
+void	pars_check_cgi(std::vector<std::string> &cgi_path, std::vector<std::string> cgi_extensions);
 void	add_last_slash(std::string &str);
 std::map<std::string, std::string> gen_mime();
 void	add_first_slash(std::string &str);
-std::string gen_auto_page(std::string path, std::string location);
+std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, std::string root);
 #endif

@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 16:28:40 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 19:38:17 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static void  double_sl(std::string root)
 void	pars_check_root(std::string &root)
 {
 	if (root.empty() || root == ".")
-		root = "/";
+		root = "";
 	if (*root.rbegin() == '/')
 		root = root.substr(0, root.size()-1);
 	double_sl(root);
@@ -94,6 +94,8 @@ std::string adresscat(std::string root, std::string location)
 {
 	std::string str;
 	str = root;
+	if (root.empty())
+		return location;
 	if (*str.rbegin() == '/' && *location.begin() == '/')
 		str+=my_substr(location.begin() + 1, location.end());
 	else if (*str.rbegin() != '/' && *location.begin() != '/')
@@ -131,13 +133,16 @@ void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned lo
 		max_body_size = server_max_body_size;
 }
 
-void	pars_check_cgi(std::vector<std::string> path, std::vector<std::string> extensions)
+void	pars_check_cgi(std::vector<std::string> &path, std::vector<std::string> extensions)
 {
 	if (path.size() != extensions.size())
 		ft_exit(PATH_EXTEN);
 	for (int i = 0; i < extensions.size(); i++)
+	{
 		if (extensions[i].length() < 2 || extensions[i][0] != '.')
 			ft_exit(EXTENTION_DOT);
+		add_last_slash(path[i]);
+	}
 }
 
 

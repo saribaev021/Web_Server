@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 13:23:11 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 19:19:21 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ static void iset_data(t_server_config_data &s)
 	s.ip = ft_trim_spases(set_ip(split_string(copy, "listen ")));
 	s.port = set_port(copy);
 	s.server_name.push_back(s.ip);
-	s.error_page = set_error_page_map(s.error_page_v, s.root);
 	s.all_method = set_all_method();
 	int j = 0;
 	while (j < s.location.size())
