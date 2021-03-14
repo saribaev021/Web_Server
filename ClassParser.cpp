@@ -16,7 +16,7 @@ void	ClassParser::fing_config_file()
 {
 	if (0) //error
 		exit(1);
-	this->config_addr = "/Users/avallie/CLionProjects/Web_Server/webserv.conf";
+	this->config_addr = "webserv.conf";
 }
 
 void ClassParser::read_from_file()
