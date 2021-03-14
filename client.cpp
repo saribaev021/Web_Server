@@ -37,3 +37,7 @@ void Client::setHttp(const Http &http) {
 const RequestParser &Client::getParserRequest() const {
 	return _parser_request;
 }
+
+std::string Client::get_remote_addr() {
+	return _remote_addr;
+}
