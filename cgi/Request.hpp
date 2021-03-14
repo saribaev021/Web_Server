@@ -64,7 +64,6 @@ std::vector<std::string> requestPost(CgiEnv env) {
 
 std::vector<std::string> requestBody(const Client &client, t_server_config_data config,
                                      t_locations locations, std::string method, std::string cgi_path) {
-    cgi_path.erase(cgi_path.end() - 1);
     CgiEnv env(client, locations, cgi_path, config);
     if (method == "HEAD")
         return requestHead(env);

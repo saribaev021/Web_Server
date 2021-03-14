@@ -98,7 +98,7 @@ CgiEnv &CgiEnv::createEnv() {
 
 std::string CgiEnv::getAuthType() {
     /* Возможно стоит поменять на поиск из auth-scheme    Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l*/
-    return std::string("AUTH_TYPE=Basic");
+    return std::string("AUTH_TYPE=" + locations.auth_data.AuthType);
 }
 
 std::string CgiEnv::getContentLength() {
@@ -121,11 +121,11 @@ std::string CgiEnv::getGatewayInterface() {
 }
 
 std::string CgiEnv::getPathInfo() {
-    return std::string("PATH_INFO=" + client.getHttp().getStartLine().find("location")->second);
+    return std::string("PATH_INFO=" + client.getHttp().getStartLine().find("path_info")->second);
 }
 
 std::string CgiEnv::getPathTranslated() {
-    return std::string("PATH_TRANSLATED=" + client.getHttp().getStartLine().find("location")->second);
+    return std::string("PATH_TRANSLATED=" + client.getHttp().getStartLine().find("path_info")->second);
 }
 
 std::string CgiEnv::getQueryString() {
@@ -137,19 +137,19 @@ std::string CgiEnv::getQueryString() {
 }
 
 std::string CgiEnv::getRemoteAddr() {
-    return std::string("REMOTE_ADDR=");
+    return std::string("REMOTE_ADDR=" + client.get_remote_addr());
 }
 
 std::string CgiEnv::getRemoteIdent() {
     /* пока нет */
 //	return client.get_remote_ident();
-    return std::string("REMOTE_IDENT=");
+    return std::string("REMOTE_IDENT=" + locations.auth_data.password);
 }
 
 std::string CgiEnv::getRemoteUser() {
     /* пока нет */
 //	return client.get_remote_user();
-    return std::string("REMOTE_USER=user");
+    return std::string("REMOTE_USER=user" + locations.auth_data.login);
 }
 
 std::string CgiEnv::getRequestMethod() {
@@ -179,11 +179,11 @@ std::string CgiEnv::getServerPort() {
 }
 
 std::string CgiEnv::getServerProtocol() {
-    return std::string("SERVER_PROTOCOL=HTTP/1.1");
+    return std::string("SERVER_PROTOCOL=" + client.getHttp().getStartLine().find("http_version")->second);
 }
 
 std::string CgiEnv::getServerSoftware() {
-    return std::string("SERVER_SOFTWARE=GavnoIsBrevna&Palock");
+    return std::string("SERVER_SOFTWARE=web_server");
 }
 
 char **CgiEnv::getEnvArray() {
@@ -210,11 +210,4 @@ std::string CgiEnv::getFileName() {
     return std::string("SCRIPT_FILENAME=" + client.getHttp().getStartLine().find("source")->second);
 }
 
-/* getServerPort
- * getServerName
- * getScriptName
- * getRemoteUser
- * getRemoteIdent
- * не работают так как нужно искать или в config или по папкам
- */
 #endif //WEBSERVER_CGIENV_HPP
