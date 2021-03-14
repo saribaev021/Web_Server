@@ -80,3 +80,7 @@ void Http::clear() {
 	_error_flag = 0;
 	_length = 500;
 }
+
+int Http::getErrorFlag() const {
+	return _error_flag;
+}

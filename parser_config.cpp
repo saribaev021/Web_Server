@@ -26,21 +26,7 @@ std::vector<t_server_config_data>		parser_config(void)
  #include <sys/time.h>
 
 
-std::string Get_local_time()
-{
-	struct timeval tv;
-	time_t t;
-	struct tm info;
-	char buffer[64];
 
-	gettimeofday(&tv, NULL);
-	t = tv.tv_sec;
-	std::string s = std::to_string(t);
-	strptime(s.c_str(), " %s ", &info);
-	strftime (buffer, sizeof(buffer), "%a, %d %b %Y %X %Z", &info);
-	std::string str = buffer;
-	return str;
-}
 
 
 int main()

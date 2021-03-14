@@ -60,6 +60,7 @@ typedef struct	s_server_config_data
     unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
 	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
 	std::map<std::string, std::string> mime_map;
+
 }				t_server_config_data;
 
 int						ft_skip_spases(std::string::iterator i);
@@ -75,6 +76,7 @@ int						found_last_bracket(std::string::iterator i, std::string::iterator end);
 std::string				ft_trim_spases(std::string s);
 std::string::iterator	my_find(std::string &s, std::string des);
 std::string 			set_string_p(std::string &str, std::string found);
+std::string 			base64_decode(std::string const& encoded_string);
 std::vector<t_locations> split_locations(std::string &str);
 unsigned long long 		set_size(std::string str);
 std::vector<std::string> set_vector(std::string &str, std::string found);
