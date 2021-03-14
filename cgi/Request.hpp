@@ -8,7 +8,7 @@
 #include "Executor.hpp"
 #include "../Server.hpp"
 
-std::vector<std::string> parseResponse(std::string response){
+std::vector<std::string> parseResponse(std::string response) {
     std::vector<std::string> ret(3, "");
     int status;
     std::string stringStatus;
@@ -19,8 +19,7 @@ std::vector<std::string> parseResponse(std::string response){
         ret[0] = "200";
         ret[1] = response.substr(0, len + 4);
         ret[2] = response.substr(len + 4);
-    }
-    else{
+    } else {
         ret[0] = response.substr(8, 3);
         ret[1] = response.substr(response.find('\n'), len + 4 - response.find('\n'));
         ret[2] = response.substr(len + 4);

@@ -15,8 +15,9 @@ private:
     std::string body;
     Client _client;
 public:
-    Executor(char **arrayEnv, const std::string &launcher, const std::string &scrypt, const std::string &body, const Client &client) :
-            arrayEnv(arrayEnv), body(body), _client(client){
+    Executor(char **arrayEnv, const std::string &launcher, const std::string &scrypt, const std::string &body,
+             const Client &client) :
+            arrayEnv(arrayEnv), body(body), _client(client) {
         launch = (char **) malloc(sizeof(char *) * 3);
         launch[0] = strdup(launcher.c_str());
         launch[1] = strdup(("./" + scrypt).c_str());
@@ -49,8 +50,8 @@ Executor &Executor::launcher() {
     if (pid == 0) {
         dup2(fdIn[0], 0);
         dup2(fdOut[1], 1);
-//        for(int i = 0; getArrayEnv()[i] != NULL; i++)
-//            std::cerr<<getArrayEnv()[i]<<std::endl;
+//        for (int i = 0; getArrayEnv()[i] != NULL; i++)
+//            std::cerr << getArrayEnv()[i] << std::endl;
         chdir(_client.getHttp().getStartLine().find("change_location")->second.c_str());
         status = execve(getLaunch()[0], getLaunch(), getArrayEnv());
         exit(status);

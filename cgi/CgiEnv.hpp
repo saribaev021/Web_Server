@@ -18,7 +18,7 @@ private:
     t_server_config_data config;
 public:
     CgiEnv(const Client &_client, t_locations _locations, std::string cgi_path, t_server_config_data config) :
-    client(_client), cgi_path(cgi_path), config(config), locations(_locations) {
+            client(_client), cgi_path(cgi_path), config(config), locations(_locations) {
     }
 
     const std::string &getCgiPath() const;
@@ -80,7 +80,6 @@ CgiEnv &CgiEnv::createEnv() {
     env.push_back(getPathTranslated());
     env.push_back(getQueryString());
     env.push_back(getRemoteAddr());
-    env.push_back(getRemoteAddr());
     env.push_back(getRemoteIdent());
     env.push_back(getRemoteUser());
     env.push_back(getRequestMethod());
@@ -91,13 +90,13 @@ CgiEnv &CgiEnv::createEnv() {
     env.push_back(getServerPort());
     env.push_back(getServerProtocol());
     env.push_back(getServerSoftware());
-    for (std::map<std::string, std::string>::const_iterator i = client.getHttp().getHeadMap().begin(); i != client.getHttp().getHeadMap().end(); i++)
+    for (std::map<std::string, std::string>::const_iterator i = client.getHttp().getHeadMap().begin();
+         i != client.getHttp().getHeadMap().end(); i++)
         env.push_back("HTTP_" + i->first + "=" + i->second);
     return *this;
 }
 
 std::string CgiEnv::getAuthType() {
-    /* Возможно стоит поменять на поиск из auth-scheme    Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l*/
     return std::string("AUTH_TYPE=" + locations.auth_data.AuthType);
 }
 
@@ -141,15 +140,11 @@ std::string CgiEnv::getRemoteAddr() {
 }
 
 std::string CgiEnv::getRemoteIdent() {
-    /* пока нет */
-//	return client.get_remote_ident();
     return std::string("REMOTE_IDENT=" + locations.auth_data.password);
 }
 
 std::string CgiEnv::getRemoteUser() {
-    /* пока нет */
-//	return client.get_remote_user();
-    return std::string("REMOTE_USER=user" + locations.auth_data.login);
+    return std::string("REMOTE_USER=" + locations.auth_data.login);
 }
 
 std::string CgiEnv::getRequestMethod() {
@@ -210,4 +205,4 @@ std::string CgiEnv::getFileName() {
     return std::string("SCRIPT_FILENAME=" + client.getHttp().getStartLine().find("source")->second);
 }
 
-#endif //WEBSERVER_CGIENV_HPP
+#endif
