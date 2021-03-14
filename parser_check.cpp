@@ -6,7 +6,7 @@
 /*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 21:21:22 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:29:17 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ static void  double_sl(std::string root)
 
 void	pars_check_root(std::string &root)
 {
-	if (root.empty() || root == ".")
+	if (root.empty()) 
+		ft_exit(NO_ROOT);
+	if (root == ".")
 		root = "";
 	if (*root.rbegin() == '/')
 		root = root.substr(0, root.size()-1);
@@ -238,7 +240,6 @@ void	check_ip_port_unique(std::vector<s_server_config_data> data)
 			if (v[i] == v[j])
 				ft_exit(UNICUE_IP);
 		}
-		std::cout << v[i] << std::endl;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:23:42 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 21:22:33 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:28:07 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void ft_exit(int error)
 										<< std::endl;		break;
 	case UNICUE_IP:
 		std::cout << "IP+PORT not unicue" << std::endl;		break;
+	case NO_ROOT:
+		std::cout << "No root" << std::endl; 				break;
 	default:
 		std::cout << "Error unknown error\n";				break;
 	}
