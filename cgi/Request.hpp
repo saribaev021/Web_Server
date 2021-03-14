@@ -8,91 +8,70 @@
 #include "Executor.hpp"
 #include "../Server.hpp"
 
-std::vector<std::string> requestHead(const Client &client, t_server_config_data config, t_locations locations) {
-	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
-	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
-				client.getHttp().getBody());
-	executor.pipeFd();
-	executor.launcher();
-	executor.inputBody();
-	std::string ret = executor.getBody();
-	size_t t = ret.find("\r\n\r\n");
-	std::vector<std::string> vectorResponse(2);
-	if (t != std::string::npos) {
-		vectorResponse[0] = ret.substr(0, t);
-		vectorResponse[1] = "";
-	}
-	return vectorResponse;
+std::vector<std::string> parseResponse(std::string response){
+    std::vector<std::string> ret(3, "");
+    int status;
+    std::string stringStatus;
+
+    size_t check = response.find("Status:");
+    size_t len = response.find("\r\n\r\n");
+    if (check == std::string::npos) {
+        ret[0] = "200";
+        ret[1] = response.substr(0, len + 4);
+        ret[2] = response.substr(len + 4);
+    }
+    else{
+        ret[0] = response.substr(8, 3);
+        ret[1] = response.substr(response.find('\n'), len + 4 - response.find('\n'));
+        ret[2] = response.substr(len + 4);
+    }
+    return ret;
 }
 
-std::vector<std::string> requestGet(const Client &client, t_server_config_data config, t_locations locations) {
-	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
-	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
-				client.getHttp().getBody());
-	executor.pipeFd();
-	executor.launcher();
-	executor.inputBody();
-	std::string ret = executor.getBody();
-	size_t t = ret.find("\r\n\r\n");
-	std::vector<std::string> vectorResponse(2);
-	if (t != std::string::npos) {
-		vectorResponse[0] = ret.substr(0, t);
-		vectorResponse[1] = ret.substr(t);
-	}
-	return vectorResponse;
+std::vector<std::string> requestHead(CgiEnv env) {
+    Executor executor(env.createEnv().getEnvArray(), env.getCgiPath(), (
+                              env.getClient().getHttp().getStartLine().find("source")->second),
+                      env.getClient().getHttp().getBody(), env.getClient());
+    executor.pipeFd();
+    executor.launcher();
+    executor.inputBody();
+    std::string ret = executor.getBody();
+    return parseResponse(ret);
 }
 
-std::vector<std::string> requestPost(const Client &client, t_server_config_data config, t_locations locations) {
-	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
-	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
-					  client.getHttp().getBody());
-	executor.pipeFd();
-	executor.putBody();
-	executor.launcher();
-	executor.inputBody();
-	std::string ret = executor.getBody();
-	size_t t = ret.find("\r\n\r\n");
-	std::vector<std::string> vectorResponse(2);
-	if (t != std::string::npos) {
-		vectorResponse[0] = ret.substr(0, t);
-		vectorResponse[1] = ret.substr(t);
-	}
-	return vectorResponse;
+std::vector<std::string> requestGet(CgiEnv env) {
+    Executor executor(env.createEnv().getEnvArray(), env.getCgiPath(), (
+                              env.getClient().getHttp().getStartLine().find("source")->second),
+                      env.getClient().getHttp().getBody(), env.getClient());
+    executor.pipeFd();
+    executor.launcher();
+    executor.inputBody();
+    std::string ret = executor.getBody();
+    return parseResponse(ret);
 }
 
-
-std::vector<std::string> requestPut(const Client &client, t_server_config_data config, t_locations locations) {
-	CgiEnv env(client, locations);
-	char *tmp = strdup("/Users/avallie/CLionProjects/Web_Server/cgi/test/test.php");
-	Executor executor(env.createEnv().getEnvArray(), locations.cgi_path, tmp,
-					  client.getHttp().getBody());
-	executor.pipeFd();
-	executor.putBody();
-	executor.launcher();
-	executor.inputBody();
-	std::string ret = executor.getBody();
-	size_t t = ret.find("\r\n\r\n");
-	std::vector<std::string> vectorResponse(2);
-	if (t != std::string::npos) {
-		vectorResponse[0] = ret.substr(0, t);
-		vectorResponse[1] = ret.substr(t);
-	}
-	return vectorResponse;
+std::vector<std::string> requestPost(CgiEnv env) {
+    Executor executor(env.createEnv().getEnvArray(), env.getCgiPath(), (
+                              env.getClient().getHttp().getStartLine().find("source")->second),
+                      env.getClient().getHttp().getBody(), env.getClient());
+    executor.pipeFd();
+    executor.putBody();
+    executor.launcher();
+    executor.inputBody();
+    std::string ret = executor.getBody();
+    return parseResponse(ret);
 }
 
-std::vector<std::string> requestBody(const Client &client, t_server_config_data config, t_locations locations, std::string method){
-	if (method == "HEAD")
-		return requestHead(client, config, locations);
-	else if (method == "POST")
-		return requestPost(client, config, locations);
-	else if (method == "GET")
-		return requestGet(client, config, locations);
-	else if (method == "PUT")
-		return requestPut(client, config, locations);
-	return std::vector<std::string>(2, "");
+std::vector<std::string> requestBody(const Client &client, t_server_config_data config,
+                                     t_locations locations, std::string method, std::string cgi_path) {
+    CgiEnv env(client, locations, cgi_path, config);
+    if (method == "HEAD")
+        return requestHead(env);
+    else if (method == "POST")
+        return requestPost(env);
+    else if (method == "GET")
+        return requestGet(env);
+    return std::vector<std::string>(2, "");
 }
 
 #endif
