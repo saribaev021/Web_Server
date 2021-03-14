@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:59:44 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 18:09:06 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,6 @@ void	pars_check_cgi(std::vector<std::string> &path, std::vector<std::string> ext
 	{
 		if (extensions[i].length() < 2 || extensions[i][0] != '.')
 			ft_exit(EXTENTION_DOT);
-		add_last_slash(path[i]);
 	}
 }
 
