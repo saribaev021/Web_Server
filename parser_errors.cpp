@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:23:42 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 12:26:19 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:31:59 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,29 @@ void ft_exit(int error)
 	case EXTENTION_DOT:
 		std::cout << "Еhe extension must start with a dot"
 										<< std::endl;		break;
+	case NO_VALID_AUTH_FILE:
+		std::cout << "auth_file must me\nAuthType Basic\nlogin:password"
+										<< std::endl;		break;
 	default:
 		std::cout << "Error unknown error\n";				break;
 	}
 	exit(1);
 }
+
+void ft_exit(int error, std::string s)
+{
+	std::cout << "Config error:" << std::endl;
+	switch (error)
+	{
+	case AUTH_PATH:
+		std::cout << "Error file ot path:\n";
+		std::cout << s << std::endl; break;
+	default:
+		std::cout << "Error unknown error\n";			break;
+	}
+	exit(1);
+}
+
 void ft_exit(int error, std::string::iterator i)
 {
 	std::cout << "Config error:" << std::endl;

@@ -13,10 +13,15 @@
 //}
 
 HttpHeaders::HttpHeaders(const std::map<std::string, std::string> &mimeTypes) :_mime_types(mimeTypes) {
-    _status["200"] = "HTTP/1.1 200 OK\r\n";
-    _status["400"] = "HTTP/1.1 400 Bad Request\r\n";
-    _status["404"] = "HTTP/1.1 404 Not Found\r\n";
-    _status["405"] = "HTTP/1.1 405 Method Not Allowed\r\n";
+	std::string s1("100 101 102 103 200 201 202 203 204 205 206 300 301 302 303 304 305 306 307 308 400 401 402 403 404 405 406 407 408 409 410 411 412 413 414 415 416 417 500 501 502 503 504 505 ");
+	std::string s2("Continue\nSwitching Protocol\nProcessing\nEarly Hints\nOK\nCreated\nAccepted\nNon-Authoritative Information\nNo Content\nReset Content\nPartial Content\nMultiple Choice\nMoved Permanently\nFound\nSee Other\nNot Modified\nUse Proxy\nSwitch Proxy\nTemporary Redirect\nPermanent Redirect\nBad Request\nUnauthorized\nPayment Required\nForbidden\nNot Found\nMethod Not Allowed\nNot Acceptable\nProxy Authentication Required\nRequest Timeout\nConflict\nGone\nLength Required\nPrecondition Failed\nRequest Entity Too Large\nRequest-URI Too Long\nUnsupported Media Type\nRequested Range Not Satisfiable\nExpectation Failed\nInternal Server Error\nNot Implemented\nBad Gateway\nService Unavailable\nGateway Timeout\nHTTP Version Not Supported\n");
+	std::vector<std::string> v1 = ft_split_string_to_vector(s1, ' ');
+	std::vector<std::string> v2 = ft_split_string_to_vector(s2, '\n');
+	for (int i = 0; i < v2.size(); i++)
+	{
+		v2[i] = "HTTP/1.1 " + v1[i] + " " + v2[i] + "\r\n";
+		_status.insert(std::pair<std::string, std::string>(v1[i], v2[i]));
+	}
 }
 
 const std::string HttpHeaders::get_date(time_t t) const{
@@ -29,11 +34,11 @@ const std::string HttpHeaders::get_date(time_t t) const{
     std::string str = buffer;
     return str;
 }
-const std::string HttpHeaders::get_server() const {
+std::string HttpHeaders::get_server() const {
     return std::string("Server: web_server\r\n");
 }
 
-const std::string HttpHeaders::get_content_type(const std::string &extensions) const {
+std::string HttpHeaders::get_content_type(const std::string &extensions) const {
     std::map<std::string, std::string>::const_iterator  it;
     if ((it = _mime_types.find(extensions)) != _mime_types.end()){
         return std::string("Content-Type: " + it->second + "\r\n");
@@ -41,7 +46,7 @@ const std::string HttpHeaders::get_content_type(const std::string &extensions) c
     return std::string("Content-Type: application/octet-stream\r\n");
 }
 
-const std::string HttpHeaders::get_last_modified(const std::string &str) {
+std::string HttpHeaders::get_last_modified(const std::string &str) {
     struct stat	buf;
     int			result;
 
@@ -52,7 +57,7 @@ const std::string HttpHeaders::get_last_modified(const std::string &str) {
     return  std::string();
 }
 
-const std::string HttpHeaders::get_server_date() const {
+std::string HttpHeaders::get_server_date() const {
 	struct timeval tv;
 	time_t t;
 	gettimeofday(&tv, NULL);
@@ -60,7 +65,7 @@ const std::string HttpHeaders::get_server_date() const {
     return "Date: "+get_date(t) + "\r\n";
 }
 
-const std::string HttpHeaders::generate_headers(std::map<std::string, std::string> &m) {
+std::string HttpHeaders::generate_headers(std::map<std::string, std::string> &m) {
 	std::string headers;
 	headers = _status[m["status"]];
 	headers += get_server();
@@ -76,6 +81,21 @@ const std::string &HttpHeaders::get_status(const std::string &code_status) {
 	return _status[code_status];
 }
 
-const std::string HttpHeaders::get_content_length(const std::string &len) const {
+std::string HttpHeaders::get_content_length(const std::string &len) const {
 	return std::string("Content-length: " + len + "\r\n");
+}
+
+std::string HttpHeaders::generate_special_headers(int code_error, t_locations &loc, std::string l) {
+	if (code_error >= 300 && code_error < 400){
+		return std::string("Location: " + l + "/" + "\r\n");
+	}else if (code_error == 401){
+		return  std::string ("WWW-Authenticate: " + loc.auth_data.AuthType + " realm=\"Access to the staging site\", charset=\"UTF-8\"\r\n");
+	}else if (code_error == 405){
+		std::string str = "Allow: ";
+		for (size_t i = 0; i < loc.method.size() ; ++i) {
+			str+= loc.method[i] + ",";
+		}
+		return str + "\r\n";
+	}
+	return std::string();
 }

@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 17:34:42 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 22:00:10 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,30 @@ std::vector<t_server_config_data>		parser_config(void)
 
 int main()
 {
-	std::vector<t_server_config_data> p = parser_config();
-	int i = 0;
-	int j;
-	int k;
+	// std::map<std::string, std::string> m;
+	// m = gen_http_code();
 
-//	std::cout << Get_local_time() << std::endl;
-	// std::cout << gen_auto_page(std::string("/Users/fbarbera/21/"), std::string("21/")) << std::endl;
+	// 	for(std::map<std::string, std::string>::iterator it = m.begin(); it != m.end(); ++it)
+	// 	{
+	// 		std::cout << it->first << " : " << it->second;///вывод на экран
+	// 	}
+	
+	std::vector<t_server_config_data> p = parser_config();
+
+	std::cout << p[0].location[0].auth_data.AuthType << std::endl;
+	std::cout << p[0].location[0].auth_data.login << std::endl;
+	std::cout << p[0].location[0].auth_data.password << std::endl;
+	std::cout << p[0].location[0].auth_data.password_64 << std::endl;
+	// std::cout << Get_local_time() << std::endl;
+
+	
+	// ClassGenPage er(p[0].error_page);
+	// std::cout << er.gen_error_page(404);
+	// std::cout << er.gen_auto_page(p[0].root, "/");
+
+	// int i = 0;
+	// int j;
+	// int k;	
 	// while (i < p.size())
 	// {
 	// 	j = 0;
