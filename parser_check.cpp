@@ -6,7 +6,7 @@
 /*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 18:09:06 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:21:22 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,21 @@ void	pars_check_auth(s_locations &location)
 	
 }
 
-
+void	check_ip_port_unique(std::vector<s_server_config_data> data)
+{
+	std::vector<std::string> v;
+	for (int i = 0; i < data.size(); i++)
+		v.push_back(data[i].ip + ":" + data[i].port);
+	for (int i = 0; i < v.size(); i++)
+	{
+		for (int j = i + 1; j < v.size(); j++)
+		{
+			if (v[i] == v[j])
+				ft_exit(UNICUE_IP);
+		}
+		std::cout << v[i] << std::endl;
+	}
+}
 
 // void	pars_check_max_body_size(data[i].max_body_size);
 // void	adress_cat(data[i].location[j].location);

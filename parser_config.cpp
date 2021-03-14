@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 14:40:54 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 22:00:10 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:16:51 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ int main()
 	
 	std::vector<t_server_config_data> p = parser_config();
 
-	std::cout << p[0].location[0].auth_data.AuthType << std::endl;
-	std::cout << p[0].location[0].auth_data.login << std::endl;
-	std::cout << p[0].location[0].auth_data.password << std::endl;
-	std::cout << p[0].location[0].auth_data.password_64 << std::endl;
+	// std::cout << p[0].location[0].auth_data.AuthType << std::endl;
+	// std::cout << p[0].location[0].auth_data.login << std::endl;
+	// std::cout << p[0].location[0].auth_data.password << std::endl;
+	// std::cout << p[0].location[0].auth_data.password_64 << std::endl;
 	// std::cout << Get_local_time() << std::endl;
 
 	

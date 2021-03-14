@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_errors.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:23:42 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:31:59 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:22:33 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void ft_exit(int error)
 	case NO_VALID_AUTH_FILE:
 		std::cout << "auth_file must me\nAuthType Basic\nlogin:password"
 										<< std::endl;		break;
+	case UNICUE_IP:
+		std::cout << "IP+PORT not unicue" << std::endl;		break;
 	default:
 		std::cout << "Error unknown error\n";				break;
 	}

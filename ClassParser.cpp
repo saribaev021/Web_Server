@@ -6,7 +6,7 @@
 /*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 18:08:59 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:11:14 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ClassParser::fing_config_file()
 {
 	if (0) //error
 		exit(1);
-	this->config_addr = "/Users/ndreadno/web_server/webserv.conf";
+	this->config_addr = "webserv.conf";
 }
 
 void ClassParser::read_from_file()
@@ -264,4 +264,5 @@ void ClassParser::set_default_values()
 		}
 		i++;
 	}
+	check_ip_port_unique(data);
 }

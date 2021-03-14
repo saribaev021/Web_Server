@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:59:21 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:12:34 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,5 +99,5 @@ void					add_first_slash(std::string &str);
 std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, std::string root);
 std::map<std::string, std::string> gen_http_code();
 void	pars_check_auth(s_locations &location);
-
+void	check_ip_port_unique(std::vector<s_server_config_data> data);
 #endif
