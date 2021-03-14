@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 16:34:12 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:09:04 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ClassParser::fing_config_file()
 {
 	if (0) //error
 		exit(1);
-	this->config_addr = "/Users/ndreadno/web_server/webserv.conf";
+	this->config_addr = "/Users/avallie/CLionProjects/Web_Server/webserv.conf";
 }
 
 void ClassParser::read_from_file()
@@ -248,6 +248,7 @@ void ClassParser::set_default_values()
 		pars_check_port(data[i].port);
 		pars_check_root(data[i].root);
 		pars_check_max_body_size(data[i].max_body_size);
+		data[i].error_page = set_error_page_map(data[i].error_page_v, data[i].root);
 		j = 0;
 		if (data[i].location.empty())
 			ft_exit(777);
@@ -259,6 +260,7 @@ void ClassParser::set_default_values()
 			pars_check_location_root(data[i].location[j].root, data[i].root);
 			add_last_slash(data[i].location[j].upload_storage);
 			pars_check_cgi(data[i].location[j].cgi_path, data[i].location[j].cgi_extensions);
+			pars_check_auth(data[i].location[j]);
 			j++;
 		}
 		i++;

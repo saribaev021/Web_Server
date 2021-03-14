@@ -3,6 +3,7 @@
 //
 
 #include "RequestParser.hpp"
+#include "parser_config.hpp"
 
 void RequestParser::_to_upper(std::string &str) {
 	for (size_t i = 0; i < str.length(); ++i) {
@@ -40,9 +41,9 @@ bool RequestParser::_parser_head() {
 	std::string value;
 	std::string invalid_character = "\"(),/:;<=>?@[\\]{} ";
 	std::list<std::string>::iterator it = _tokens.begin();
-	for (; it != _tokens.end(); ++it){
-		_to_lower(*it);
-	}
+//	for (; it != _tokens.end(); ++it){
+//
+//	}
 	it  = _tokens.begin();
 	for (; it != _tokens.end(); ++it){
 		size_t pos;
@@ -55,6 +56,10 @@ bool RequestParser::_parser_head() {
 			_error_flag = 400;
 			return false;
 		} else{
+			_to_lower(header);
+			if (header != "authorization")
+				_to_lower(value);
+			value =  ft_trim_spases(value);
 			std::pair<std::map<std::string, std::string>::iterator, bool>p = _headMap.insert(std::pair<std::string, std::string>(header, value));
 			if (!p.second){
 				if (header == "host" || header == "content-length"){
@@ -62,7 +67,7 @@ bool RequestParser::_parser_head() {
 					_error_flag = 400;
 					return false;
 				}
-				p.first->second += "," + value;
+				p.first->second = value;
 			}
 		}
 	}
@@ -101,6 +106,7 @@ void RequestParser::_parser_location(std::string &uri){
 bool RequestParser::_parser_uri() {
 	std::string delimetr = "http://";
 	std::string uri = _start_line["uri"];
+	std::string host;
 	size_t pos;
 	if (_findi( uri, delimetr, delimetr.length()) != std::string::npos) {
 		uri.erase(0, delimetr.length());
@@ -131,7 +137,14 @@ bool RequestParser::_parser_uri() {
 		_error_flag = 400;
 		return false;
 	}
-	return true;
+	host = _start_line["host"];
+	for (size_t i = 0; i < _server_names.size(); ++i) {
+		if (host == _server_names[i])
+			return true;
+	}
+	_status = "error";
+	_error_flag = 400;
+	return false;
 }
 
 bool RequestParser::_check_validation_start_line() {
@@ -272,28 +285,16 @@ void RequestParser::clear() {
 
 void RequestParser::parser(Http &http) {
 	_buffer = http.getBuffer();
-//	std::cout << _buffer<<std::endl;
 	if (http.getStatus() == "read_header") {
 		if (!_parser_tokens() || !_parser_start_line() || !_parser_head()) {
 			if (_status != "error"){
 				return;
 			}
-//			std::cout << "error " << _error_flag;
 			http.setErrorFlag(_error_flag);
 			http.setStatus(_status);
 			clear();
 			return;
 		}
-//		std::map<std::string, std::string>::iterator it2 = _start_line.begin();
-//		for (; it2 != _start_line.end(); ++it2) {
-//			std::cout << it2->first << ":" << it2->second << std::endl;
-//		}
-//		std::cout << std::endl << std::endl;
-//		std::map<std::string, std::string>::iterator it = _headMap.begin();
-//		for (; it != _headMap.end(); ++it) {
-//			std::cout << it->first << ":" << it->second << std::endl;
-//		}
-//		std::cout << std::endl << std::endl;
 		if (_buffer.length() > 0 && (_headMap.find("content-length") == _headMap.end() || _headMap.find("transfer-encoding") == _headMap.end())){
 			_status = "error";
 			_error_flag = 411;

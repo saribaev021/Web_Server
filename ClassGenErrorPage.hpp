@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClassGenErrorPage.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:38:39 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/11 20:05:40 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 19:32:57 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,24 @@
 # define CLASSGENERRORPAGE_HPP
 
 # include "parser_config.hpp"
+# include "map"
+# include "system_include.hpp"
 
-class ClassGenErrorPage
+class ClassGenPage
 {
 private:
-	std::string s1 = "<html><head><title>ERROR PAGE</title></head><body><br /><br /><br /><p align=\"center\" style=\"color:#ff4444;font-size:80px\"> <b>ERROR ";
-	std::string s2 = ".</b></p></body></html>";
+	std::string s1;
+	std::string s2;
+	std::map<int, std::string>	data;
+	int found_error(int error, std::string &error_page);
+	int count_dir(std::string str);
+	ClassGenPage();
 public:
-	ClassGenErrorPage();
-	std::string generate(int error);
-	std::string generate(std::string error);
-	~ClassGenErrorPage();
+	ClassGenPage(std::map<int, std::string> data);
+	~ClassGenPage();
+	std::string gen_error_page(int error);
+	std::string gen_error_page(std::string error);
+	std::string gen_auto_page(std::string path, std::string location);
 };
-
-ClassGenErrorPage::ClassGenErrorPage(/* args */)
-{
-}
-
-ClassGenErrorPage::~ClassGenErrorPage()
-{
-}
-
 
 # endif

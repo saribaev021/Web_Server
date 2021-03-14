@@ -13,7 +13,7 @@ bool compare(const t_locations &s1, const t_locations &s2){
 			key2++;
 		}
 	}
-	return key < key2;
+	return key > key2;
 }
 std::vector<t_server_config_data>		parser_config(void)
 {
@@ -23,6 +23,7 @@ std::vector<t_server_config_data>		parser_config(void)
 	p.read_from_file(); // чтение конфига
 	p.pars_data(); // разбитие на токены
 	p.set_default_values(); // установка значений (дефолтные/по серверу)
+	std::sort(p.get_data()[0].location.begin(), p.get_data()[0].location.end(), &compare);
 	return (p.get_data());
 }
 

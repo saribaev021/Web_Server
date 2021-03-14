@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 16:28:40 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/13 21:59:44 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static void  double_sl(std::string root)
 void	pars_check_root(std::string &root)
 {
 	if (root.empty() || root == ".")
-		root = "/";
+		root = "";
 	if (*root.rbegin() == '/')
 		root = root.substr(0, root.size()-1);
 	double_sl(root);
@@ -94,6 +94,8 @@ std::string adresscat(std::string root, std::string location)
 {
 	std::string str;
 	str = root;
+	if (root.empty())
+		return location;
 	if (*str.rbegin() == '/' && *location.begin() == '/')
 		str+=my_substr(location.begin() + 1, location.end());
 	else if (*str.rbegin() != '/' && *location.begin() != '/')
@@ -131,14 +133,100 @@ void	pars_check_location_max_body_size(unsigned long &max_body_size, unsigned lo
 		max_body_size = server_max_body_size;
 }
 
-void	pars_check_cgi(std::vector<std::string> path, std::vector<std::string> extensions)
+void	pars_check_cgi(std::vector<std::string> &path, std::vector<std::string> extensions)
 {
 	if (path.size() != extensions.size())
 		ft_exit(PATH_EXTEN);
 	for (int i = 0; i < extensions.size(); i++)
+	{
 		if (extensions[i].length() < 2 || extensions[i][0] != '.')
 			ft_exit(EXTENTION_DOT);
+		add_last_slash(path[i]);
+	}
 }
+
+static const std::string base64_chars =
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+static inline bool is_base64(unsigned char c) {
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+std::string base64_decode(std::string const& encoded_string)
+{
+	int in_len = encoded_string.size();
+	int i = 0;
+	int j = 0;
+	int in_ = 0;
+	unsigned char char_array_4[4], char_array_3[3];
+	std::string ret;
+
+	while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+	char_array_4[i++] = encoded_string[in_]; in_++;
+	if (i ==4) {
+		for (i = 0; i <4; i++)
+		char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+		char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+		char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+		char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+		for (i = 0; (i < 3); i++)
+		ret += char_array_3[i];
+		i = 0;
+	}
+	}
+
+	if (i) {
+	for (j = i; j <4; j++)
+		char_array_4[j] = 0;
+
+	for (j = 0; j <4; j++)
+		char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+	char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+	char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+	char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+	for (j = 0; (j < i - 1); j++)
+		ret += char_array_3[j];
+	}
+	return ret;
+}
+
+void	pars_check_auth(s_locations &location)
+{
+	if (!location.auth)
+		return ;
+	std::string line;
+	std::string::iterator i;
+    std::ifstream in(location.path_to_auth);
+    if (in.is_open())
+    {
+        while (getline(in, line))
+		{
+			if ((i = my_find(line, "AuthType "))!= line.end())
+				location.auth_data.AuthType = my_substr(i + 9, line.end());
+			else if ((i = my_find(line, ":"))!= line.end())
+				location.auth_data.login = line;
+			else
+				ft_exit(NO_VALID_AUTH_FILE);
+		}
+    }
+	else
+		ft_exit(AUTH_PATH, location.path_to_auth);
+	location.auth_data.password = location.auth_data.login.substr(location.auth_data.login.find(':') + 1, location.auth_data.login.length());
+    location.auth_data.login = my_substr(location.auth_data.login.begin(), my_find(location.auth_data.login, ":"));
+	if (location.auth_data.password.empty() || location.auth_data.login.empty() || location.auth_data.AuthType != "Basic")
+		ft_exit(NO_VALID_AUTH_FILE);
+	location.auth_data.password_64 = location.auth_data.password;
+	location.auth_data.password = base64_decode(location.auth_data.password);
+	in.close();
+	
+}
+
 
 
 // void	pars_check_max_body_size(data[i].max_body_size);
