@@ -26,7 +26,6 @@ private:
 	void _error_handler(Http &http, int cod_error, t_locations &loc, std::string l);
 	std::string _get_extensions(const std::string &);
 	std::vector<std::string> _get_method(Http &http);
-	std::vector<std::string> _put_method(Http &http);
 	std::vector<std::string> _head_method(Http &http);
 	std::pair<bool, size_t> _check_authorization(Http &http, t_locations &loc);
 	std::pair<bool, size_t> who_execute(t_locations &loc, std::string &method, std::string execute);

@@ -71,23 +71,22 @@ std::vector<std::string> Server::_head_method(Http &http) {
 void Server::_controller(Client &client, t_locations &locations, std::string &method, std::pair<bool, size_t>p)
 {
 	Http http = client.getHttp();
-	if (p.first && method != "PUT"){
-	    std::vector<std::string> ret = requestBody(client, _config, locations, method, locations.cgi_path[p.second]);
+	if (p.first || method == "PUT"){
+		std::vector<std::string>response(2, "");
+		std::string header;
+		std::vector<std::string> ret = requestBody(client, _config, locations, method, locations.cgi_path[p.second]);
 
-        for (std::vector<std::string>::iterator i = ret.begin(); i != ret.end() ; i++) {
-            std::cerr<<"|"<<*i<<"|"<<std::endl;
-        }
-		std::vector<std::string>response;
-		response.push_back("HTTP/1.1 200 OK\r\n"
-						   "Server: nginx/1.14.2\r\n"
-						   "Date: Sat, 06 Mar 2021 17:46:49 GMT\r\n"
-						   "Content-Type: text/html\r\n"
-						   "Content-Length: 6\r\n"
-						   "Last-Modified: Sat, 06 Mar 2021 17:46:27 GMT\r\n"
-						   "Connection: keep-alive\r\n"
-						   "ETag: \"6043bff3-6\"\r\n"
-						   "Accept-Ranges: bytes\r\n\r\n");
-		response.push_back("hello\n");
+//        for (std::vector<std::string>::iterator i = ret.begin(); i != ret.end() ; i++) {
+//            std::cerr<<"|"<<*i<<"|"<<std::endl;
+//        }
+		header = ret[1];
+        header.insert(0, _generate_headers.get_status(ret[0]));
+        header += _generate_headers.get_server();
+        header += _generate_headers.get_server_date();
+        header += _generate_headers.get_content_length(std::to_string(ret[2].length()));
+        header += "\r\n\r\n";
+        response[0] = header;
+        response[1] = ret[2];
 		http.setResponse(response);
 		http.setStatus("write");
 	}else{
@@ -330,3 +329,4 @@ std::pair<bool, size_t> Server::_check_authorization(Http &http, t_locations &lo
 	}
 	return std::make_pair(true, 0);
 }
+
