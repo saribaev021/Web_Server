@@ -19,12 +19,12 @@ Server::Server(const t_server_config_data &config) : _gen_page(config.error_page
 std::string Server::_get_remote_addr(int fd, sockaddr_in *addr, socklen_t *len) {
 	getsockname(fd, reinterpret_cast<sockaddr *>(addr), len);
 	uint32_t ip = addr->sin_addr.s_addr;
-	uint8_t octet1 = (ip >> 24) & 0xFF;
-	uint8_t octet2 = (ip >> 16) & 0xFF;
-	uint8_t octet3 = (ip >> 8) & 0xFF;
-	uint8_t octet4 = ip & 0xFF;
+	int octet1 = static_cast<int>((ip >> 24) & 0xFF);
+	int octet2 = static_cast<int>((ip >> 16) & 0xFF);
+	int octet3 = static_cast<int>((ip >> 8) & 0xFF);
+	int octet4 = static_cast<int>(ip & 0xFF);
 	std::stringstream stream;
-	stream << octet1 << "." << octet2 << "." << octet3 << "." << octet4;
+	stream << octet4 << "." << octet3 << "." << octet2 << "." << octet1;
 	return std::string(stream.str());
 }
 

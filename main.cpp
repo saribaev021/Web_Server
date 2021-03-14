@@ -94,7 +94,7 @@ int main()  {
 		for (size_t i = 0; i < servers.size(); ++i){
 			for (size_t k = 0; k < servers[i].getClient().size(); ++k){
 				if (FD_ISSET(servers[i].getClient()[k].getFd(), &writeFds)){
-					servers[i].response(i);
+					servers[i].response(k);
 				}
 			}
 		}
