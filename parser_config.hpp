@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 21:12:34 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:33:59 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct	s_locations
     std::vector<std::string>	cgi_path; //+ если пусто то cgi не поддерживается
     std::string					upload_storage; //+ путь куда исполнить медот PUT (если нет метода пут - ошибка?)
 	std::string					path_to_auth;
+	std::vector<std::string>	index_types; //+
 	t_auth						auth_data;
 	bool						auth; 
 }				t_locations;
@@ -56,7 +57,6 @@ typedef struct	s_server_config_data
     std::string					root; //+ по дефлту .
     std::vector<std::string>	error_page_v; //- 
 	std::map<int, std::string>	error_page; 
-	std::vector<std::string>	index_types; //+
     unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
 	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
 	std::map<std::string, std::string> mime_map;

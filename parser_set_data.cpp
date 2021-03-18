@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:31:26 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:38:15 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,6 @@ static void iset_data(t_server_config_data &s)
 	if (s.server_name.empty())
 		;
 	else s.server_name = split_vector(s.server_name[0], "server_name ");
-	if (!s.index_types.empty())
-		s.index_types = split_vector(s.index_types[0], "index ");
 	s.root = (split_string(s.root, "root "));
 	if (s.ip.empty())
 		ft_exit(IP_ERROR);
@@ -185,7 +183,7 @@ static void iset_data(t_server_config_data &s)
 	{
 		s.location[j].location = set_loc(split_string(s.location[j].location, "location "));
 		if (s.location[j].root.empty())
-			s.location[j].root = s.root;
+			s.location[j].root = "";
 		else
 			s.location[j].root = split_string(s.location[j].root, "root ");
 		if (s.location[j].method.empty())
@@ -210,6 +208,8 @@ static void iset_data(t_server_config_data &s)
 			if (!s.location[j].path_to_auth.empty())
 				s.location[j].auth = true;
 		}
+		if (!s.location[j].index_types.empty())
+			s.location[j].index_types = split_vector(s.location[j].index_types[0], "index ");
 		j++;
 	}
 }
@@ -226,18 +226,17 @@ t_server_config_data	pars_data_for_servers(std::string str)
 		s.location[j].root = set_string_p(s.location[j].full_loc, "root ");
 		s.location[j].autoindex = set_auto(set_string_p(s.location[j].full_loc, "autoindex "));
 		s.location[j].method = set_vector(s.location[j].full_loc, "method ");
-		// s.location[j].max_body_size = set_size(set_string_p(s.location[j].full_loc, "max_body_size "));
 		s.location[j].cgi_extensions = set_vector(s.location[j].full_loc, "cgi_extensions ");
 		s.location[j].cgi_path = set_vector(s.location[j].full_loc, "cgi_path ");
 		s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
 		s.location[j].path_to_auth = set_string_p(s.location[j].full_loc, "auth_basic_user_file ");
+		s.location[j].index_types = set_vector(s.location[j].full_loc, "index ");
 		iterator = s.location[j].full_loc.begin() + 7;
 		if (check_error_token(iterator, s.location[j].full_loc.end()) != s.location[j].full_loc.end())
 			ft_exit(ERROR_TOKEN, iterator);
 		j++;
 	}
 	s.server_name = set_vector(str, "server_name ");
-	s.index_types = set_vector(str, "index ");
 	s.root = set_string_p(str, "root ");
 	s.ip = set_string_p(str, "listen ");
 	s.error_page_v = set_error_page(str, "error_page ");
