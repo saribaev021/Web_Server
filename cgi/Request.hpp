@@ -17,12 +17,16 @@ std::vector<std::string> parseResponse(std::string response) {
     size_t len = response.find("\r\n\r\n");
     if (check == std::string::npos) {
         ret[0] = "200";
-        ret[1] = response.substr(0, len + 4);
-        ret[2] = response.substr(len + 4);
+        if (!response.empty()) {
+			ret[1] = response.substr(0, len + 2);
+			ret[2] = response.substr(len + 4);
+		}
     } else {
-        ret[0] = response.substr(8, 3);
-        ret[1] = response.substr(response.find('\n'), len + 4 - response.find('\n'));
-        ret[2] = response.substr(len + 4);
+		if (!response.empty()) {
+			ret[0] = response.substr(8, 3);
+			ret[1] = response.substr(response.find('\n'), len + 4 - response.find('\n'));
+			ret[2] = response.substr(len + 4);
+		}
     }
     return ret;
 }

@@ -93,7 +93,9 @@ std::string HttpHeaders::generate_special_headers(int code_error, t_locations &l
 	}else if (code_error == 405){
 		std::string str = "Allow: ";
 		for (size_t i = 0; i < loc.method.size() ; ++i) {
-			str+= loc.method[i] + ",";
+			str+= loc.method[i];
+			if (i + 1 < loc.method.size())
+				str += ",";
 		}
 		return str + "\r\n";
 	}

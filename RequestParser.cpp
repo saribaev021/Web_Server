@@ -72,6 +72,7 @@ bool RequestParser::_parser_head() {
 		}
 	}
 	std::map<std::string, std::string>::iterator it_m;
+
 	if ((it_m = _headMap.find("transfer-encoding")) != _headMap.end()){
 		if (it_m->second != "chunked"){
 			_status = "error";
@@ -83,7 +84,7 @@ bool RequestParser::_parser_head() {
 		_contet_length = atol(it_m->second.c_str());
 		if (_max_body_size < _contet_length || _contet_length < 0){
 			_status = "error";
-			_error_flag = 400;
+			_error_flag = 413;
 			return false;
 		}
 		_status = "read_body_content_length";
@@ -199,9 +200,12 @@ bool RequestParser::_parser_tokens() {
 	size_t pos = 0;
 	std::string token;
 	std::string delimiter = "\r\n\r\n";
-	if (_buffer.substr(0, 2) == "\r\n") {
-		_buffer.erase(0, 2);
+
+	while (_buffer[pos] == '\r' || _buffer[pos] == '\n') {
+		pos++;
 	}
+	_buffer.erase(0, pos);
+	pos = 0;
 	if (_buffer.length() > 8000){
 		_status = "error";
 		_error_flag = 400;
@@ -241,34 +245,42 @@ size_t RequestParser::_to_int(std::string str) {
 	return n;
 }
 void RequestParser::_body_chunked() {
-	std::string delimetr = "\r\n";
-	std::list<std::string>tokens;
-	size_t length;
-	size_t pos = 0;
-	while ((pos = _buffer.find(delimetr)) != std::string::npos){
-		tokens.push_back(_buffer.substr(0, pos));
-		_buffer.erase(0, delimetr.length() + pos);
-	}
-	tokens.push_back(_buffer);
-	std::list<std::string>::iterator it = tokens.begin();
-	std::list<std::string>::iterator it2 = ++tokens.begin();
-	for (; it != tokens.end(); ++it, ++it2)
-	{
-		length = _to_int(*it);
-		if (length == 0){
-			_status = "execute";
-			_buffer.clear();
-			return;
-		}
-		if (length > it2->length()){
-			_buffer = *it;
-			_buffer += *it2;
-			_status = "read_body_chunked";
-			return;
-		}else{
-			_body += *it2;
-		}
-	}
+//	std::string delimetr = "\r\n";
+//	std::list<std::string>tokens;
+//	std::string buf = _buffer;
+//	size_t length;
+//	size_t pos = 0;
+//		while ((pos = buf.find(delimetr)) != std::string::npos) {
+//			tokens.push_back(buf.substr(0, pos));
+//			buf.erase(0, delimetr.length() + pos);
+//		}
+//		if (buf[0] != '\0') {
+//			_status = "read_body_chunked";
+//			return;
+//		}
+//		_buffer = buf;
+//		std::list<std::string>::iterator it = tokens.begin();
+//		std::list<std::string>::iterator it2 = ++tokens.begin();
+//		for (; it != tokens.end(); it++, it2++) {
+//			length = _to_int(*it);
+//			if (length == 0) {
+//				_status = "execute";
+//				_buffer.clear();
+//				return;
+//			}
+//			if (length > it2->length()) {
+//				_buffer = *it;
+//				_buffer += "\r\n" + *it2;
+//				_status = "read_body_chunked";
+//				return;
+//			} else {
+//				_body += *it2;
+//			}
+//			it2++;
+//			it++;
+//		}//\r\n
+	//_buffer
+	// 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
 }
 
 void RequestParser::clear() {
@@ -295,7 +307,7 @@ void RequestParser::parser(Http &http) {
 			clear();
 			return;
 		}
-		if (_buffer.length() > 0 && (_headMap.find("content-length") == _headMap.end() || _headMap.find("transfer-encoding") == _headMap.end())){
+		if (_buffer.length() > 0 && (_headMap.find("content-length") == _headMap.end() && _headMap.find("transfer-encoding") == _headMap.end())){
 			_status = "error";
 			_error_flag = 411;
 			http.setErrorFlag(_error_flag);
@@ -307,20 +319,24 @@ void RequestParser::parser(Http &http) {
 		http.setHeadMap(_headMap);
 		http.setStartLine(_start_line);
 		http.setLength(_contet_length);
+		http.setBuffer(_buffer);
 		if (_status == "execute"){
 			clear();
 		}
 		_tokens.clear();
 		_status.clear();
 		_error_flag = 0;
-
-	}if (http.getStatus() == "read_body_chunked"){
+	}if (http.getStatus() == "read_body_chunked" && !_buffer.empty()){
 		_body_chunked();
+		http.setBuffer(_buffer);
+		http.setStatus(_status);
+		http.setBody(_body);
+		clear();
 	}else if (http.getStatus() == "read_body_content_length"){
-		if (_contet_length > _buffer.length()){
+		if (http.getLength() > _buffer.length()){
 			_body = _buffer;
 		}else {
-			_body = _buffer.substr(0, _contet_length);
+			_body = _buffer.substr(0, http.getLength());
 		}
 		_status = "execute";
 		http.setStatus(_status);

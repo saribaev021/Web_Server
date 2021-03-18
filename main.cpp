@@ -50,7 +50,7 @@ int main()  {
 		for (size_t i = 0; i < servers.size(); ++i){
 			FD_SET(servers[i].getSocketServer(), &readFds);
 			for (size_t j = 0; j < servers[i].getClient().size(); ++j) {
-				if (servers[i].getClient()[j].getHttp().getStatus() == "read_header"){
+				if (servers[i].getClient()[j].getHttp().getStatus().find("read") != std::string::npos){
 					FD_SET(servers[i].getClient()[j].getFd(), &readFds);
 				}
 				if (servers[i].getClient()[j].getHttp().getStatus() == "write") {
@@ -87,6 +87,7 @@ int main()  {
 		for (size_t i = 0; i < servers.size(); ++i){
 			for (size_t k = 0; k < servers[i].getClient().size(); ++k){
 				if (FD_ISSET(servers[i].getClient()[k].getFd(), &readFds)){
+
 					servers[i].recive(k);
 				}
 			}

@@ -62,7 +62,7 @@ void Socket::setAddres(const std::string &addres) {
 const std::string &Socket::getPort() const {
 	return _port;
 }
-
+// a12\r\nqweqwwqewe
 void Socket::setPort(const std::string &port) {
 	_port = port;
 }

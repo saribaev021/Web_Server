@@ -1,5 +1,4 @@
 <?php
-// echo phpinfo();
 $indicesServer = array('PHP_SELF',
 'argv',
 'argc',
@@ -51,3 +50,4 @@ foreach ($indicesServer as $arg) {
     }
 }
 echo '</table>' ;
+?>
