@@ -1,0 +1,125 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/18 19:15:48 by fbarbera          #+#    #+#             */
+/*   Updated: 2021/03/18 21:48:58 by fbarbera         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+// _buffer - строка 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
+// 
+
+#include "test.hpp"
+
+
+size_t test::_to_int(std::string str) {
+	std::stringstream stream;
+	size_t n;
+	stream << std::hex << str;
+	stream >> n;
+	return n;
+}
+
+
+static bool my_find_del(std::string::iterator begin, std::string::iterator end, std::string delimetr, bool &full)
+{
+	for (size_t n = 0; begin != end; begin++)
+	{
+		if (*begin != delimetr[n])
+			return false;
+		n++;
+		if (n == delimetr.size())
+		{
+			full = true;
+			return true;
+		}
+	}
+	return true;
+}
+
+void test::_body_chunked() {
+	std::string delimetr = "\r\n";
+	std::string tmp = _buffer;
+	std::string::iterator begin = tmp.begin();
+	std::string::iterator end = tmp.end();
+	std::string token;
+	size_t size_to_delete = 0;
+	bool full = false;
+	
+	size_t size_buffer = _buffer.size();
+
+	while (begin != end)
+	{
+		if (_big_changus)
+		{
+			if (my_find_del(begin, end, delimetr, full))
+			{
+				_status = "execute";
+				_buffer.clear();
+				return;
+			}
+			std::cout << "big" << std::endl;
+		}
+		if (my_find_del(begin, end, delimetr, full) == true && size_of_body == 0)
+		{
+			std::cout << "1" << std::endl;
+			if (full)
+			{
+				if (_count_body == true)
+				{
+					_body+=token;
+					size_to_delete+=token.size() + 2;
+					token.clear();
+					_count_body = false;
+				}
+				else
+				{
+					if (token == "0")
+						_big_changus = true;
+					size_of_body = this->_to_int(token);
+					size_to_delete+=token.size() + 2;
+					token.clear();
+					_count_body = true;
+				}
+				full = false;
+				begin+=2;
+			}
+			else
+			{
+				_status = "read_body_chunked";
+				_buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
+				return;
+			}
+		}
+		else
+		{
+			if (size_of_body == 0)
+			{
+				token+= *begin;
+				begin++;
+			}
+			else if (size_buffer - size_to_delete > size_of_body)
+			{
+					std::cout << "aa" << std::endl;
+					token+= my_substr(begin, size_of_body);
+					begin+=size_of_body;
+					size_of_body=0;	
+			}
+			else
+			{	
+				token+= my_substr(begin, size_of_body);
+				begin+=size_buffer - size_to_delete;;
+				size_of_body-= size_buffer - size_to_delete;
+				std::cout << "1qq" << std::endl;
+			}
+		}
+	}
+	_status = "read_body_chunked";
+	_buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
+	std::cout << size_of_body << std::endl;
+	return ;
+}
