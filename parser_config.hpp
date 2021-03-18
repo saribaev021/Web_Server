@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:59:21 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:47:01 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct	s_locations
     std::vector<std::string>	cgi_path; //+ если пусто то cgi не поддерживается
     std::string					upload_storage; //+ путь куда исполнить медот PUT (если нет метода пут - ошибка?)
 	std::string					path_to_auth;
+	std::vector<std::string>	index_types; //+
 	t_auth						auth_data;
 	bool						auth; 
 }				t_locations;
@@ -56,7 +57,6 @@ typedef struct	s_server_config_data
     std::string					root; //+ по дефлту .
     std::vector<std::string>	error_page_v; //- 
 	std::map<int, std::string>	error_page; 
-	std::vector<std::string>	index_types; //+
     unsigned long				max_body_size; // - не указано (по дефолту 1Gb)
 	std::vector<std::string>	all_method; // + GET HEAD POST PUT // для каната
 	std::map<std::string, std::string> mime_map;
@@ -99,5 +99,6 @@ void					add_first_slash(std::string &str);
 std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, std::string root);
 std::map<std::string, std::string> gen_http_code();
 void	pars_check_auth(s_locations &location);
-
+void	check_ip_port_unique(std::vector<s_server_config_data> data);
+void  double_sl(std::string root);
 #endif

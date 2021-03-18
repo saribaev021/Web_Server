@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 18:09:06 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:50:27 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	pars_check_port(std::string port)
 		ft_exit(NO_PORT);
 }
 
-static void  double_sl(std::string root)
+void  double_sl(std::string root)
 {
 	int count = 0;
 	for (int i = 0; i < root.length(); i++)
@@ -77,7 +77,9 @@ static void  double_sl(std::string root)
 
 void	pars_check_root(std::string &root)
 {
-	if (root.empty() || root == ".")
+	if (root.empty()) 
+		ft_exit(NO_ROOT);
+	if (root == ".")
 		root = "";
 	if (*root.rbegin() == '/')
 		root = root.substr(0, root.size()-1);
@@ -121,8 +123,6 @@ void pars_check_location_root(std::string &root, std::string server_root)
 		root = "/";
 	if (root.empty())
 		root = server_root;
-	else if (root[0] == '/')
-		root = server_root + root;
 	add_last_slash(root);
 	double_sl(root);
 }
@@ -226,7 +226,20 @@ void	pars_check_auth(s_locations &location)
 	
 }
 
-
+void	check_ip_port_unique(std::vector<s_server_config_data> data)
+{
+	std::vector<std::string> v;
+	for (int i = 0; i < data.size(); i++)
+		v.push_back(data[i].ip + ":" + data[i].port);
+	for (int i = 0; i < v.size(); i++)
+	{
+		for (int j = i + 1; j < v.size(); j++)
+		{
+			if (v[i] == v[j])
+				ft_exit(UNICUE_IP);
+		}
+	}
+}
 
 // void	pars_check_max_body_size(data[i].max_body_size);
 // void	adress_cat(data[i].location[j].location);

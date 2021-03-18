@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_errors.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:24:12 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:23:50 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/14 21:27:32 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@
 # define EXTENTION_DOT 13
 # define AUTH_PATH 14
 # define NO_VALID_AUTH_FILE 15
+# define UNICUE_IP 16
+# define NO_ROOT 17
+
 void	ft_exit(int error);
 void	ft_exit(int error, std::string::iterator i);
 void	ft_exit(int error, std::string s);

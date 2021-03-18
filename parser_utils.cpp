@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 20:14:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 12:43:35 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 16:33:01 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,8 @@ std::vector<std::string> ft_split_string_to_vector(std::string str, char ch)
 		else
 			new_str += str[index];
 	}
+	if (!new_str.empty())
+		vector.push_back(new_str);
 	return (vector);
 }
 

@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:23:42 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 21:31:59 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:52:27 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,74 +15,78 @@
 
 void ft_exit(int error)
 {
-	std::cout << "Config error:" << std::endl;
+	std::cerr << "Config error:" << std::endl;
 	switch (error)
 	{
 	case NO_METHOD:
-		std::cout << "no method" << std::endl;				break;
+		std::cerr << "no method" << std::endl;				break;
 	case UN_METHOD:
-		std::cout << "unknown method" << std::endl;			break;
+		std::cerr << "unknown method" << std::endl;			break;
 	case IP_ERROR:
-		std::cout << "ip error" << std::endl;				break;
+		std::cerr << "ip error" << std::endl;				break;
 	case NO_NAME:
-		std::cout << "No name =(" << std::endl;				break;
+		std::cerr << "No name =(" << std::endl;				break;
 	case NO_PORT:
-		std::cout << "unknown port" << std::endl;			break;
+		std::cerr << "unknown port" << std::endl;			break;
 	case DOUBLE_SL:
-		std::cout << "Double '/'" << std::endl;				break;
+		std::cerr << "Double '/'" << std::endl;				break;
 	case NO_LOCATION:
-		std::cout << "No location" << std::endl;			break;
+		std::cerr << "No location" << std::endl;			break;
 	case MAX_SIZE_ERROR:
-		std::cout << "No valid max_body_size" << std::endl;	break;
+		std::cerr << "No valid max_body_size" << std::endl;	break;
 	case NO_BRAKET:
-		std::cout << "Braket errors" << std::endl;			break;
+		std::cerr << "Braket errors" << std::endl;			break;
 	case ERROR_PAGE_ERROR:
-		std::cout << "Unknown argument in error_page"
+		std::cerr << "Unknown argument in error_page"
 										<< std::endl;		break;
 	case PATH_EXTEN:
-		std::cout << "The number of paths is not equal to the number of extensions"
+		std::cerr << "The number of paths is not equal to the number of extensions"
 										<< std::endl;		break;
 	case EXTENTION_DOT:
-		std::cout << "Еhe extension must start with a dot"
+		std::cerr << "Еhe extension must start with a dot"
 										<< std::endl;		break;
 	case NO_VALID_AUTH_FILE:
-		std::cout << "auth_file must me\nAuthType Basic\nlogin:password"
+		std::cerr << "auth_file must me\nAuthType Basic\nlogin:password"
 										<< std::endl;		break;
+	case UNICUE_IP:
+		std::cerr << "IP+PORT not unicue" << std::endl;		break;
+	case NO_ROOT:
+		std::cerr << "No root" << std::endl; 				break;
 	default:
-		std::cout << "Error unknown error\n";				break;
+		std::cerr << "Error unknown error\n";				break;
 	}
 	exit(1);
 }
 
 void ft_exit(int error, std::string s)
 {
-	std::cout << "Config error:" << std::endl;
+	std::cerr << "Config error:" << std::endl;
 	switch (error)
 	{
 	case AUTH_PATH:
-		std::cout << "Error file ot path:\n";
-		std::cout << s << std::endl; break;
+		std::cerr << "Error file ot path:\n";
+		std::cerr << s << std::endl; break;
 	default:
-		std::cout << "Error unknown error\n";			break;
+		std::cerr << "Error unknown error\n";			break;
 	}
 	exit(1);
 }
 
 void ft_exit(int error, std::string::iterator i)
 {
-	std::cout << "Config error:" << std::endl;
+	std::cerr << "Config error:" << std::endl;
 	switch (error)
 	{
 	case ERROR_TOKEN:
-		std::cout << "Error line:\n";
+		std::cerr << "Error line:\n";
 		while (*i!='\n')
 		{
-			std::cout << *i;
+			std::cerr << *i;
 			i++;
 		}
-		std::cout << std::endl; break;
+		std::cerr << std::endl; break;
 	default:
-		std::cout << "Error unknown error\n";			break;
+		std::cerr << "Error unknown error\n";			break;
 	}
 	exit(1);
 }
