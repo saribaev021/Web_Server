@@ -17,6 +17,22 @@ private:
 	std::string _buffer;
 	size_t _length;
 	int _error_flag;
+	bool _big_changus;
+	bool _count_body;
+	bool _put;
+	size_t size_of_body;
+public:
+	bool getBigChangus() const;
+
+	void setBigChangus(bool bigChangus);
+
+	bool getCountBody() const;
+
+	void setCountBody(bool countBody);
+
+	size_t getSizeOfBody() const;
+
+	void setSizeOfBody(size_t sizeOfBody);
 
 public:
 	const std::map<std::string, std::string> &getHeadMap() const;
@@ -54,6 +70,10 @@ public:
 
 	void setResponse(const std::vector<std::string> &response);
 	void clear();
+
+	bool isPut() const;
+
+	void setPut(bool put);
 };
 
 

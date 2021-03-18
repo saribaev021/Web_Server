@@ -248,44 +248,44 @@ size_t RequestParser::_to_int(std::string str) {
 // _buffer - строка 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
 // 
 
-void RequestParser::_body_chunked() {
-	std::string delimetr = "\r\n";
-	std::list<std::string>tokens;
-	std::string buf = _buffer;
-	size_t length;
-	size_t pos = 0;
-		while ((pos = buf.find(delimetr)) != std::string::npos) {
-			tokens.push_back(buf.substr(0, pos));
-			buf.erase(0, delimetr.length() + pos);
-		}
-		if (buf[0] != '\0') {
-			_status = "read_body_chunked";
-			return;
-		}
-		_buffer = buf;
-		std::list<std::string>::iterator it = tokens.begin();
-		std::list<std::string>::iterator it2 = ++tokens.begin();
-		for (; it != tokens.end(); it++, it2++) {
-			length = _to_int(*it);
-			if (length == 0) {
-				_status = "execute";
-				_buffer.clear();
-				return;
-			}
-			if (length > it2->length()) {
-				_buffer = *it;
-				_buffer += "\r\n" + *it2;
-				_status = "read_body_chunked";
-				return;
-			} else {
-				_body += *it2;
-			}
-			it2++;
-			it++;
-		}//\r\n
-	//_buffer
-	// 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
-}
+//void RequestParser::_body_chunked() {
+//	std::string delimetr = "\r\n";
+//	std::list<std::string>tokens;
+//	std::string buf = _buffer;
+//	size_t length;
+//	size_t pos = 0;
+//		while ((pos = buf.find(delimetr)) != std::string::npos) {
+//			tokens.push_back(buf.substr(0, pos));
+//			buf.erase(0, delimetr.length() + pos);
+//		}
+//		if (buf[0] != '\0') {
+//			_status = "read_body_chunked";
+//			return;
+//		}
+//		_buffer = buf;
+//		std::list<std::string>::iterator it = tokens.begin();
+//		std::list<std::string>::iterator it2 = ++tokens.begin();
+//		for (; it != tokens.end(); it++, it2++) {
+//			length = _to_int(*it);
+//			if (length == 0) {
+//				_status = "execute";
+//				_buffer.clear();
+//				return;
+//			}
+//			if (length > it2->length()) {
+//				_buffer = *it;
+//				_buffer += "\r\n" + *it2;
+//				_status = "read_body_chunked";
+//				return;
+//			} else {
+//				_body += *it2;
+//			}
+//			it2++;
+//			it++;
+//		}//\r\n
+//	//_buffer
+//	// 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
+//}
 
 void RequestParser::clear() {
 
@@ -297,6 +297,7 @@ void RequestParser::clear() {
 	_status.clear();
 	_tokens.clear();
 	_contet_length = 500;
+	_big_changus = false;
 }
 
 void RequestParser::parser(Http &http) {
@@ -331,10 +332,16 @@ void RequestParser::parser(Http &http) {
 		_status.clear();
 		_error_flag = 0;
 	}if (http.getStatus() == "read_body_chunked" && !_buffer.empty()){
+		_count_body = http.getCountBody();
+		_big_changus = http.getBigChangus();
+		size_of_body = http.getSizeOfBody();
 		_body_chunked();
 		http.setBuffer(_buffer);
 		http.setStatus(_status);
 		http.setBody(_body);
+		http.setCountBody(_count_body);
+		http.setBigChangus(_big_changus);
+		http.setSizeOfBody(size_of_body);
 		clear();
 	}else if (http.getStatus() == "read_body_content_length"){
 		if (http.getLength() > _buffer.length()){
@@ -403,7 +410,7 @@ void RequestParser::setParserFlag(int parserFlag) {
 
 RequestParser::RequestParser(const std::vector<std::string> &server_name, const std::vector<std::string> &supported_methods, int max_size) : _status(), _supported_methods(supported_methods), _server_names(server_name),
 																																			 _headMap(), _start_line(), _buffer(), _tokens(),
-																																			 _error_flag(), _parser_flag(), _max_body_size(max_size), _contet_length(500) {}
+																																			 _error_flag(), _parser_flag(), _max_body_size(max_size), _contet_length(500), _big_changus(false), size_of_body(0) {}
 
 const std::string &RequestParser::getBody() const {
 	return _body;

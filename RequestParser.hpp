@@ -57,6 +57,9 @@ private:
 	int _parser_flag;
 	size_t _max_body_size;
 	long long _contet_length;
+	bool _big_changus;
+	bool _count_body;
+	size_t size_of_body;
 
 	bool _check_validation_start_line();
 

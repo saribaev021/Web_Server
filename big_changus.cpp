@@ -13,16 +13,11 @@
 // _buffer - строка 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
 // 
 
-#include "test.hpp"
+#include "RequestParser.hpp"
+#include "parser_config.hpp"
 
 
-size_t test::_to_int(std::string str) {
-	std::stringstream stream;
-	size_t n;
-	stream << std::hex << str;
-	stream >> n;
-	return n;
-}
+
 
 
 static bool my_find_del(std::string::iterator begin, std::string::iterator end, std::string delimetr, bool &full)
@@ -41,7 +36,7 @@ static bool my_find_del(std::string::iterator begin, std::string::iterator end, 
 	return true;
 }
 
-void test::_body_chunked() {
+void RequestParser::_body_chunked() {
 	std::string delimetr = "\r\n";
 	std::string tmp = _buffer;
 	std::string::iterator begin = tmp.begin();
@@ -49,7 +44,6 @@ void test::_body_chunked() {
 	std::string token;
 	size_t size_to_delete = 0;
 	bool full = false;
-	
 	size_t size_buffer = _buffer.size();
 
 	while (begin != end)
@@ -60,13 +54,12 @@ void test::_body_chunked() {
 			{
 				_status = "execute";
 				_buffer.clear();
+				size_of_body = 0;
 				return;
 			}
-			std::cout << "big" << std::endl;
 		}
 		if (my_find_del(begin, end, delimetr, full) == true && size_of_body == 0)
 		{
-			std::cout << "1" << std::endl;
 			if (full)
 			{
 				if (_count_body == true)
@@ -104,7 +97,6 @@ void test::_body_chunked() {
 			}
 			else if (size_buffer - size_to_delete > size_of_body)
 			{
-					std::cout << "aa" << std::endl;
 					token+= my_substr(begin, size_of_body);
 					begin+=size_of_body;
 					size_of_body=0;	
@@ -113,13 +105,12 @@ void test::_body_chunked() {
 			{	
 				token+= my_substr(begin, size_of_body);
 				begin+=size_buffer - size_to_delete;;
-				size_of_body-= size_buffer - size_to_delete;
-				std::cout << "1qq" << std::endl;
+//				size_of_body-= size_buffer - size_to_delete;
 			}
 		}
 	}
 	_status = "read_body_chunked";
 	_buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
-	std::cout << size_of_body << std::endl;
+//	std::cout << size_of_body << std::endl;
 	return ;
 }

@@ -64,6 +64,12 @@ int main()  {
 		time_out.tv_usec = 000000;
 		int res = select(max_d + 1, &readFds, &writeFds, nullptr, &time_out);
 		if (res == 0){
+			for (size_t i = 0; i < servers.size(); ++i){
+				for (size_t k = 0; k < servers[i].getClient().size(); ++k){
+
+					servers[i].close_connect(k);
+				}
+			}
 			continue;
 		}
 		if (res < 0){

@@ -31,7 +31,7 @@ private:
 	std::pair<bool, size_t> _check_authorization(Http &http, t_locations &loc);
 	std::pair<bool, size_t> who_execute(t_locations &loc, std::string &method, std::string execute);
 	std::pair<bool, size_t> _check_locations(const std::string &loc, const std::vector<t_locations> &locs);
-	std::pair<bool, std::string>  _check_source(const std::string &location, const std::string &source);
+	std::pair<bool, std::string>  _check_source(const std::string &location, const std::string &source, std::vector<std::string> &);
 	std::pair<bool, size_t> _check_methods(const std::string &method, const std::vector<std::string> &methods);
 
 public:
@@ -41,6 +41,7 @@ public:
 	int getSocketServer() const;
 	void recive(int index_client);
 	void response(int index_client);
+	void close_connect(int index_client);
 };
 
 

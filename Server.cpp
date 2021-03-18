@@ -99,9 +99,10 @@ std::vector<std::string> Server::_put_method(Http &http, t_locations &locations)
 	}
 	headers += _generate_headers.get_server();
 	headers += _generate_headers.get_server_date();
-	headers += "Content_location: " + http.getStartLine().find("location")->second + http.getStartLine().find("source")->second + "\r\n\r\n";
+	headers += "Content-Location: " + http.getStartLine().find("location")->second + http.getStartLine().find("source")->second + "\r\n\r\n";
 	response[0] = headers;
 	response[1] = "";
+	http.setPut(true);
 	return response;
 }
 void Server::_controller(Client &client, t_locations &locations, std::string &method, std::pair<bool, size_t>p)
@@ -159,7 +160,7 @@ void Server::recive(int index_client) {
 			_execute_methods(_client[index_client]);
 		}
 	}else{
-		_client.erase(_client.begin() + index_client);
+		close_connect(index_client);
 	}
 }
 void Server::response(int index_client) {
@@ -177,11 +178,15 @@ void Server::response(int index_client) {
 		index = 1;
 		length = response[1].length() < length ? response[1].length() : length;
 		std::cout << response[index].substr(0, length)<<std::endl;
+	} else if (http.isPut()){
+		http.setPut(false);
+		index = 1;
+		length = 1;
 	}
 	_socket.response(_client[index_client].getFd(), response[index], length);
 	response[index].erase(0, length);
 	http.setResponse(response);
-	if (response[0].empty() && response[1].empty()) {
+	if (response[0].empty() && response[1].empty() && !http.isPut()) {
 		http.setStatus("read_header");
 		http.clear();
 	}
@@ -227,7 +232,7 @@ std::pair<bool, size_t> Server::_check_methods(const std::string &method, const 
 	}
 	return std::pair<bool, size_t>(false, 405);
 }
-std::pair<bool, std::string> Server::_check_source(const std::string &location, const std::string &source){
+std::pair<bool, std::string> Server::_check_source(const std::string &location, const std::string &source, std::vector<std::string> &index_types){
 	struct stat	buf;
 	int			result;
 	DIR *dir;
@@ -239,9 +244,9 @@ std::pair<bool, std::string> Server::_check_source(const std::string &location, 
 			s.push_back(entry->d_name);
 		}
 		closedir(dir);
-		for (size_t  i = 0; i < _config.index_types.size(); ++i) {
+		for (size_t  i = 0; i < index_types.size(); ++i) {
 			for (size_t j = 0; j < s.size(); ++j) {
-				if (s[j] == _config.index_types[i]){
+				if (s[j] == index_types[i]){
 					return std::pair<bool, std::string>(true, std::string(s[j]));
 				}
 			}
@@ -330,7 +335,7 @@ std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_re
 		http.setStartLine(m_start_line);
 		return std::make_pair(true, std::make_pair(p_loc.second, p_method.second));
 	}
-	if ((p_source = _check_source(m_start_line["change_location"], http.getStartLine().find("source")->second)).first) {
+	if ((p_source = _check_source(m_start_line["change_location"], http.getStartLine().find("source")->second, _config.location[p_loc.second].index_types)).first) {
 		m_start_line["source"] = p_source.second;
 		m_start_line["path_info"] = m_start_line["change_location"] + m_start_line["source"];
 		http.setStartLine(m_start_line);
@@ -388,5 +393,10 @@ std::pair<bool, size_t> Server::_check_authorization(Http &http, t_locations &lo
 		}
 	}
 	return std::make_pair(true, 0);
+}
+
+void Server::close_connect(int index_client) {
+	close(_client[index_client].getFd());
+	_client.erase(_client.begin() + index_client);
 }
 
