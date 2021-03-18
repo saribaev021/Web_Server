@@ -244,41 +244,45 @@ size_t RequestParser::_to_int(std::string str) {
 	stream >> n;
 	return n;
 }
+
+// _buffer - строка 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
+// 
+
 void RequestParser::_body_chunked() {
-//	std::string delimetr = "\r\n";
-//	std::list<std::string>tokens;
-//	std::string buf = _buffer;
-//	size_t length;
-//	size_t pos = 0;
-//		while ((pos = buf.find(delimetr)) != std::string::npos) {
-//			tokens.push_back(buf.substr(0, pos));
-//			buf.erase(0, delimetr.length() + pos);
-//		}
-//		if (buf[0] != '\0') {
-//			_status = "read_body_chunked";
-//			return;
-//		}
-//		_buffer = buf;
-//		std::list<std::string>::iterator it = tokens.begin();
-//		std::list<std::string>::iterator it2 = ++tokens.begin();
-//		for (; it != tokens.end(); it++, it2++) {
-//			length = _to_int(*it);
-//			if (length == 0) {
-//				_status = "execute";
-//				_buffer.clear();
-//				return;
-//			}
-//			if (length > it2->length()) {
-//				_buffer = *it;
-//				_buffer += "\r\n" + *it2;
-//				_status = "read_body_chunked";
-//				return;
-//			} else {
-//				_body += *it2;
-//			}
-//			it2++;
-//			it++;
-//		}//\r\n
+	std::string delimetr = "\r\n";
+	std::list<std::string>tokens;
+	std::string buf = _buffer;
+	size_t length;
+	size_t pos = 0;
+		while ((pos = buf.find(delimetr)) != std::string::npos) {
+			tokens.push_back(buf.substr(0, pos));
+			buf.erase(0, delimetr.length() + pos);
+		}
+		if (buf[0] != '\0') {
+			_status = "read_body_chunked";
+			return;
+		}
+		_buffer = buf;
+		std::list<std::string>::iterator it = tokens.begin();
+		std::list<std::string>::iterator it2 = ++tokens.begin();
+		for (; it != tokens.end(); it++, it2++) {
+			length = _to_int(*it);
+			if (length == 0) {
+				_status = "execute";
+				_buffer.clear();
+				return;
+			}
+			if (length > it2->length()) {
+				_buffer = *it;
+				_buffer += "\r\n" + *it2;
+				_status = "read_body_chunked";
+				return;
+			} else {
+				_body += *it2;
+			}
+			it2++;
+			it++;
+		}//\r\n
 	//_buffer
 	// 1232\r\nsgfgfgh\r\n2423\r\nfsdfd\r\n0\r\n\r\n
 }
