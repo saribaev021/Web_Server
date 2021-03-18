@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_check.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/14 21:29:17 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:50:27 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	pars_check_port(std::string port)
 		ft_exit(NO_PORT);
 }
 
-static void  double_sl(std::string root)
+void  double_sl(std::string root)
 {
 	int count = 0;
 	for (int i = 0; i < root.length(); i++)
@@ -123,8 +123,6 @@ void pars_check_location_root(std::string &root, std::string server_root)
 		root = "/";
 	if (root.empty())
 		root = server_root;
-	else if (root[0] == '/')
-		root = server_root + root;
 	add_last_slash(root);
 	double_sl(root);
 }

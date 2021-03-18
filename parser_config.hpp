@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 17:33:59 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:47:01 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,5 @@ std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, s
 std::map<std::string, std::string> gen_http_code();
 void	pars_check_auth(s_locations &location);
 void	check_ip_port_unique(std::vector<s_server_config_data> data);
+void  double_sl(std::string root);
 #endif

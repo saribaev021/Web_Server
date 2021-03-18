@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 17:38:15 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:47:47 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,17 @@ std::vector<std::string>	split_vector(std::string s, std::string type)
 	}
 	return (split);
 	
+}
+
+std::string		only_check_path(std::string location)
+{
+	location = ft_trim_spases(location);
+	if (location.empty())
+		location = "/"; //так?
+	if (location == ".")
+		location = "/";
+	double_sl(location);
+	return location;
 }
 
 std::string		split_string(std::string s, std::string type)
