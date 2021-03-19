@@ -1,7 +1,7 @@
 //
 // Created by Kanat Saribaew on 3/5/21.
 //
-
+#define READ_BUFFER 1048576
 #include <iostream>
 #include <algorithm>
 #include <map>

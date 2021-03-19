@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
+/*   big_changus.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 19:15:48 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 21:48:58 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/19 18:20:59 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,12 @@ void RequestParser::_body_chunked() {
 	size_t size_to_delete = 0;
 	bool full = false;
 	size_t size_buffer = _buffer.size();
+
+	if (size_of_body != 0 && _buffer.length() < size_of_body)
+	{
+		_status = "read_body_chunked";
+		return;
+	}
 
 	while (begin != end)
 	{
@@ -97,20 +103,22 @@ void RequestParser::_body_chunked() {
 			}
 			else if (size_buffer - size_to_delete > size_of_body)
 			{
-					token+= my_substr(begin, size_of_body);
-					begin+=size_of_body;
+					token+= tmp.substr(begin - tmp.begin(), size_of_body);
+					begin+= size_of_body;
 					size_of_body=0;	
 			}
 			else
 			{	
-				token+= my_substr(begin, size_of_body);
-				begin+=size_buffer - size_to_delete;;
-//				size_of_body-= size_buffer - size_to_delete;
+				_status = "read_body_chunked";
+				_buffer = _buffer.substr(size_to_delete);
+				return ;
 			}
 		}
 	}
 	_status = "read_body_chunked";
-	_buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
+	// size_t pos = size_to_delete;
+	_buffer = _buffer.substr(size_to_delete);
+	// _buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
 //	std::cout << size_of_body << std::endl;
 	return ;
 }

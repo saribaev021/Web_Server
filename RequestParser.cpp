@@ -296,7 +296,7 @@ void RequestParser::clear() {
 	_body.clear();
 	_status.clear();
 	_tokens.clear();
-	_contet_length = 5000;
+	_contet_length = READ_BUFFER;
 	_big_changus = false;
 }
 
@@ -412,7 +412,7 @@ void RequestParser::setParserFlag(int parserFlag) {
 
 RequestParser::RequestParser(const std::vector<std::string> &server_name, const std::vector<std::string> &supported_methods, int max_size) : _status(), _supported_methods(supported_methods), _server_names(server_name),
 																																			 _headMap(), _start_line(), _buffer(), _tokens(),
-																																			 _error_flag(), _parser_flag(), _max_body_size(max_size), _contet_length(5000), _big_changus(false), size_of_body(0) {}
+																																			 _error_flag(), _parser_flag(), _max_body_size(max_size), _contet_length(READ_BUFFER), _big_changus(false), size_of_body(0) {}
 
 const std::string &RequestParser::getBody() const {
 	return _body;
