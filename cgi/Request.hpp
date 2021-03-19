@@ -18,8 +18,13 @@ std::vector<std::string> parseResponse(std::string response) {
     if (check == std::string::npos) {
         ret[0] = "200";
         if (!response.empty()) {
-			ret[1] = response.substr(0, len + 2);
-			ret[2] = response.substr(len + 4);
+        	if (len != std::string::npos) {
+				ret[1] = response.substr(0, len + 2);
+				ret[2] = response.substr(len + 4);
+			} else{
+				ret[2] = response;
+        	}
+
 		}
     } else {
 		if (!response.empty()) {
