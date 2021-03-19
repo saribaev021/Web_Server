@@ -74,7 +74,7 @@ bool  Socket::receive(int sock_fd, Http &http) {
 	bzero(buf, http.getLength() + 1);
 	std::string str = http.getBuffer();
 	int i = recv(sock_fd, buf, http.getLength(), 0);
-	std::cout << buf;
+	// std::cout << buf;
 	if (i == 0){
 		delete[] buf;
 		return false;

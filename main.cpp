@@ -60,7 +60,7 @@ int main()  {
 					max_d = servers[i].getClient()[j].getFd();
 			}
 		}
-		time_out.tv_sec = 5;
+		time_out.tv_sec = 1;
 		time_out.tv_usec = 000000;
 		int res = select(max_d + 1, &readFds, &writeFds, nullptr, &time_out);
 		if (res == 0){
