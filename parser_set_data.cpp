@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_set_data.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 17:47:47 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/20 22:47:49 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,7 @@ t_server_config_data	pars_data_for_servers(std::string str)
 		s.location[j].upload_storage = set_string_p(s.location[j].full_loc, "upload_storage ");
 		s.location[j].path_to_auth = set_string_p(s.location[j].full_loc, "auth_basic_user_file ");
 		s.location[j].index_types = set_vector(s.location[j].full_loc, "index ");
+		s.location[j].max_body_size = set_size(set_string_p(s.location[j].full_loc, "max_body_size "));
 		iterator = s.location[j].full_loc.begin() + 7;
 		if (check_error_token(iterator, s.location[j].full_loc.end()) != s.location[j].full_loc.end())
 			ft_exit(ERROR_TOKEN, iterator);
