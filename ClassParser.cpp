@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClassParser.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 17:58:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 17:48:34 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/20 22:51:35 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,12 @@ void	ClassParser::pars_data()
 	}
 }
 
+void	pars_check_max_body_size_loc(unsigned long &max_body_size, unsigned long server)
+{
+	if (max_body_size == 0)
+		max_body_size = server;
+}
+
 
 void ClassParser::set_default_values()
 {
@@ -254,6 +260,7 @@ void ClassParser::set_default_values()
 			ft_exit(777);
 		while (j < data[i].location.size())
 		{	
+			pars_check_max_body_size_loc(data[i].location[j].max_body_size, data[i].max_body_size);
 			adress_cat(data[i].location[j].location, data[i].root);
 			add_first_slash(data[i].location[j].location);
 			add_last_slash(data[i].location[j].location);

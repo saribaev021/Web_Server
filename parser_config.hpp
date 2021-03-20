@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_config.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/02 15:07:29 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 17:47:01 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/20 22:47:22 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct	s_locations
 	std::string					full_loc; //мусорная строка для отлова лишнего
 	std::string					location; //+
 	std::string					root; //корневая папка локейшена (если нет в клнфиге заменяю на дефолтный серверный рут)
-	// unsigned long				max_body_size; // заменяю на серверный (если нет в кофиге) // удалить
+	unsigned long				max_body_size; // заменяю на серверный (если нет в кофиге) // удалить
 	bool						autoindex; //+ (по дефолту off)
 	std::vector<std::string>	method; //+ (если нет методов/не сущетвующий - выдаю ошибку)
 	std::vector<std::string>	cgi_extensions; // если нет, то (не знаю???? )
