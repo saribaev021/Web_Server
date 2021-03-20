@@ -29,9 +29,9 @@ private:
 	std::vector<std::string> _head_method(Http &http);
 	std::vector<std::string> _put_method(Http &http, t_locations &locations);
 	std::pair<bool, size_t> _check_authorization(Http &http, t_locations &loc);
-	std::pair<bool, size_t> who_execute(t_locations &loc, std::string &method, std::string execute);
+	std::pair<bool, size_t> who_execute(t_locations &loc, std::string execute);
 	std::pair<bool, size_t> _check_locations(const std::string &loc, const std::vector<t_locations> &locs);
-	std::pair<bool, std::string>  _check_source(const std::string &location, const std::string &source, std::vector<std::string> &);
+	std::pair<bool, std::string>  _check_source(const std::string &location, const std::string &source, t_locations &);
 	std::pair<bool, size_t> _check_methods(const std::string &method, const std::vector<std::string> &methods);
 
 public:

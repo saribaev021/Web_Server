@@ -99,10 +99,10 @@ std::vector<std::string> Server::_put_method(Http &http, t_locations &locations)
 	}
 	headers += _generate_headers.get_server();
 	headers += _generate_headers.get_server_date();
+	headers += _generate_headers.get_content_length("0");
 	headers += "Content-Location: " + http.getStartLine().find("location")->second + http.getStartLine().find("source")->second + "\r\n\r\n";
 	response[0] = headers;
 	response[1] = "";
-	http.setPut(true);
 	return response;
 }
 void Server::_controller(Client &client, t_locations &locations, std::string &method, std::pair<bool, size_t>p)
@@ -167,9 +167,10 @@ void Server::response(int index_client) {
 	Http http = _client[index_client].getHttp();
 	std::vector<std::string> response = http.getResponse();
 	std::string status;
-	size_t length = 500;
-	size_t index = 0;
 
+	size_t length = 500000;
+	size_t index = 0;
+	std::cout << "RESPONSE"<<std::endl;
 	if (response[0].length()){
 		index = 0;
 		length = response[0].length() < length ? response[0].length() : length;
@@ -177,16 +178,11 @@ void Server::response(int index_client) {
 	}else if (response[1].length()){
 		index = 1;
 		length = response[1].length() < length ? response[1].length() : length;
-		std::cout << response[index].substr(0, length)<<std::endl;
-	} else if (http.isPut()){
-		http.setPut(false);
-		index = 1;
-		length = 1;
 	}
-	_socket.response(_client[index_client].getFd(), response[index], length);
+	length = _socket.response(_client[index_client].getFd(), response[index].substr(0, length), length);
 	response[index].erase(0, length);
 	http.setResponse(response);
-	if (response[0].empty() && response[1].empty() && !http.isPut()) {
+	if (response[0].empty() && response[1].empty()) {
 		http.setStatus("read_header");
 		http.clear();
 	}
@@ -198,16 +194,19 @@ void Server::_execute_methods(Client &client) {
 	Http http = client.getHttp();
 	std::pair<bool, std::pair<size_t, size_t> >p = std::make_pair(false, std::make_pair(http.getErrorFlag(), 0));
 	std::cout << "RESPONSE"<<std::endl;
+	if (http.getStatus() == "error"){
+		std::cerr<<""<<std::endl;
+	}
 	if (http.getStatus() != "error") {
 		http.setStatus("write");
 		if ((p = _checking_сorrectness_of_request(http)).first){
 			client.setHttp(http);
 			t_locations loc = _config.location[p.second.first];
 			std::string method = loc.method[p.second.second];
-			_controller(client, loc, method, who_execute(loc, method, http.getStartLine().find("source")->second));
+			_controller(client, loc, method, who_execute(loc,  http.getStartLine().find("source")->second));
 			return;
 		}
-		std::string redirect = http.getStartLine().find("location")->second +  http.getStartLine().find("source")->second;
+		std::string redirect = http.getStartLine().find("uri")->second;
 		_error_handler(http, p.second.second, _config.location[p.second.first],  redirect);
 	}else
 		_error_handler(http, http.getErrorFlag(), _config.location[0],  std::string(""));
@@ -232,13 +231,17 @@ std::pair<bool, size_t> Server::_check_methods(const std::string &method, const 
 	}
 	return std::pair<bool, size_t>(false, 405);
 }
-std::pair<bool, std::string> Server::_check_source(const std::string &location, const std::string &source, std::vector<std::string> &index_types){
+std::pair<bool, std::string> Server::_check_source(const std::string &location, const std::string &source, t_locations &loc){
 	struct stat	buf;
 	int			result;
 	DIR *dir;
 	struct dirent	*entry;
 	std::string full_path = location +source;
 	std::vector<std::string>s;
+	std::vector<std::string>index_types = loc.index_types;
+	if (who_execute(loc, source).first){
+		return std::pair<bool, std::string>(true, std::string(source));
+	}
 	if (source.empty() && (dir = opendir(location.c_str()))){
 		while (dir && (entry = readdir(dir)) != nullptr) {
 			s.push_back(entry->d_name);
@@ -268,9 +271,6 @@ void Server::_error_handler(Http &http, int cod_error, t_locations &loc, std::st
 	std::string header;
 	std::string special_header;
 	std::vector<std::string>response(2, "");
-	if (cod_error == 501){
-		cod_error = 501;
-	}
 	http.setStatus("write");
 	http.setErrorFlag(cod_error);
 	header = _generate_headers.get_server();
@@ -292,7 +292,8 @@ void Server::_error_handler(Http &http, int cod_error, t_locations &loc, std::st
 	}
 	header += "\r\n";
 	response[0] = header;
-	response[1] = body;
+	if (http.getStartLine().find("method")->second != "HEAD")
+		response[1] = body;
 	http.setResponse(response);
 }
 
@@ -312,11 +313,15 @@ std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_re
 		return std::make_pair(false, std::make_pair(0, p_loc.second));
 	}
 	if (p_loc2.first && p_loc.second != p_loc2.second){
-		size_t pos = location2.find( _config.location[p_loc2.second].location);
-		location2.erase(0, pos + _config.location[p_loc2.second].location.length());
-		m_start_line["change_location"] = _config.location[p_loc2.second].root + location2;
-		http.setStartLine(m_start_line);
-		return std::make_pair(false, std::make_pair(p_loc2.second,301));
+
+		p_loc = p_loc2;
+		m_start_line["source"] = "";
+//		size_t pos = location2.find( _config.location[p_loc2.second].location);
+//		int status = m_start_line.find("method")->second != "GET" &&  m_start_line.find("method")->second != "HEAD" ? 308 : 301;
+//		location2.erase(0, pos + _config.location[p_loc2.second].location.length());
+//		m_start_line["change_location"] = _config.location[p_loc2.second].root + location2;
+//		http.setStartLine(m_start_line);
+//		return std::make_pair(false, std::make_pair(p_loc2.second,status));
 	}
 	if (!(p_auth = _check_authorization(http, _config.location[p_loc.second])).first){
 		return std::make_pair(false, std::make_pair(p_loc.second, p_auth.second));
@@ -335,7 +340,11 @@ std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_re
 		http.setStartLine(m_start_line);
 		return std::make_pair(true, std::make_pair(p_loc.second, p_method.second));
 	}
-	if ((p_source = _check_source(m_start_line["change_location"], http.getStartLine().find("source")->second, _config.location[p_loc.second].index_types)).first) {
+	if (_config.max_body_size < http.getBody().length()){
+		http.setStartLine(m_start_line);
+		return std::make_pair(false, std::make_pair(p_loc.second, 413));
+	}
+	if ((p_source = _check_source(m_start_line["change_location"], m_start_line["source"], _config.location[p_loc.second])).first) {
 		m_start_line["source"] = p_source.second;
 		m_start_line["path_info"] = m_start_line["change_location"] + m_start_line["source"];
 		http.setStartLine(m_start_line);
@@ -346,7 +355,7 @@ std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_re
 	}
 }
 
-std::pair<bool, size_t> Server::who_execute(t_locations &loc, std::string &method, std::string execute) {
+std::pair<bool, size_t> Server::who_execute(t_locations &loc, std::string execute) {
 	size_t pos;
 	std::vector<std::string>extensions = loc.cgi_extensions;
 	for (size_t  i = 0; i < extensions.size(); ++i) {

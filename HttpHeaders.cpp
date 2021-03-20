@@ -43,7 +43,7 @@ std::string HttpHeaders::get_content_type(const std::string &extensions) const {
     if ((it = _mime_types.find(extensions)) != _mime_types.end()){
         return std::string("Content-Type: " + it->second + "\r\n");
     }
-    return std::string("Content-Type: application/octet-stream\r\n");
+    return std::string("Content-Type: text/plain\r\n");
 }
 
 std::string HttpHeaders::get_last_modified(const std::string &str) {

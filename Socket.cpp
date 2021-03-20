@@ -67,14 +67,16 @@ void Socket::setPort(const std::string &port) {
 	_port = port;
 }
 size_t Socket::response(int sock_fd, const std::string &val, size_t size) {
-	return send(sock_fd, val.c_str(), val.length(), 0);
+	return send(sock_fd, val.c_str(), size, 0);
 }
 bool  Socket::receive(int sock_fd, Http &http) {
 	char *buf = new char[http.getLength() + 1];
 	bzero(buf, http.getLength() + 1);
 	std::string str = http.getBuffer();
 	int i = recv(sock_fd, buf, http.getLength(), 0);
-	// std::cout << buf;
+//	std::ofstream log("request.log", std::ios_base::app);
+//	log << buf;
+//	log.close();
 	if (i == 0){
 		delete[] buf;
 		return false;
@@ -87,6 +89,7 @@ bool  Socket::receive(int sock_fd, Http &http) {
 }
 Socket::Socket(const std::string &addres, const std::string &port) : _addres(addres), _port(port){
 	_size_sock_addr = sizeof (sockaddr_in);
+
 }
 
 Socket::Socket() {_size_sock_addr = sizeof (sockaddr_in);}

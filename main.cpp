@@ -28,6 +28,12 @@ std::vector<t_server_config_data>		parser_config(void)
 }
 
 int main()  {
+	std::ofstream log("request.log");
+	std::ofstream log2("response.log");
+
+	log.close();
+	log2.close();
+	signal(SIGPIPE, SIG_IGN);
 	timeval time_out;
 	std::vector<t_server_config_data> configs = parser_config();
 	std::vector<Server>servers;
@@ -60,16 +66,16 @@ int main()  {
 					max_d = servers[i].getClient()[j].getFd();
 			}
 		}
-		time_out.tv_sec = 1;
+		time_out.tv_sec = 3;
 		time_out.tv_usec = 000000;
 		int res = select(max_d + 1, &readFds, &writeFds, nullptr, &time_out);
 		if (res == 0){
-			for (size_t i = 0; i < servers.size(); ++i){
-				for (size_t k = 0; k < servers[i].getClient().size(); ++k){
-
-					servers[i].close_connect(k);
-				}
-			}
+//			for (size_t i = 0; i < servers.size(); ++i){
+//				for (size_t k = 0; k < servers[i].getClient().size(); ++k){
+//
+//					servers[i].close_connect(k);
+//				}
+//			}
 			continue;
 		}
 		if (res < 0){

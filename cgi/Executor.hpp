@@ -10,8 +10,8 @@ class Executor {
 private:
     char **arrayEnv;
     char **launch;
-    int fdIn[2];
-    int fdOut[2];
+    int fdIn;
+    int fdOut;
     std::string body;
     Client _client;
 public:
@@ -20,7 +20,7 @@ public:
             arrayEnv(arrayEnv), body(body), _client(client) {
         launch = (char **) malloc(sizeof(char *) * 3);
         launch[0] = strdup(launcher.c_str());
-        launch[1] = strdup(("./" + scrypt).c_str());
+        launch[1] = strdup(scrypt.c_str());
         launch[2] = NULL;
     }
 
@@ -32,7 +32,7 @@ public:
 
     Executor &putBody();
 
-    Executor &inputBody();
+    Executor &outputBody();
 
     void pipeFd();
 
@@ -45,45 +45,57 @@ Executor &Executor::launcher() {
     int status = 0;
 
     pid_t pid = fork();
-    write(fdIn[1], "\n", 1);
-    close(fdIn[1]);
     if (pid == 0) {
-        dup2(fdIn[0], 0);
-        dup2(fdOut[1], 1);
-//        for (int i = 0; getArrayEnv()[i] != NULL; i++)
-//            std::cerr << getArrayEnv()[i] << std::endl;
+        fdIn = open("cgi_file_input.txt", O_RDWR);
+        dup2(fdIn, 0);
+        fdOut = open("cgi_file_output.txt", O_CREAT | O_RDWR | O_TRUNC, 0666);
+        dup2(fdOut, 1);
         chdir(_client.getHttp().getStartLine().find("change_location")->second.c_str());
+        std::cerr<<_client.getHttp().getStartLine().find("change_location")->second<<"|"<<std::endl;
+        std::cerr<<"|"<<getcwd(NULL, 0)<<std::endl;
         status = execve(getLaunch()[0], getLaunch(), getArrayEnv());
+        std::cerr<<"{"<<status<<"}"<<std::endl;
         exit(status);
     } else if (pid < 0)
         write(2, "Error Fork", 10);
     pid = waitpid(pid, &status, WUNTRACED);
-    close(fdIn[0]);
-    close(fdOut[1]);
+    close(fdIn);
     return *this;
 }
 
 Executor &Executor::putBody() {
-    if (!body.empty()) {
-        write(fdIn[1], body.c_str(), body.length());
+    int i = 0;
+//    int len = 64000;
+//    std::ifstream file1("qwe.txt");
+    fdIn = open("cgi_file_input.txt", O_CREAT | O_RDWR | O_TRUNC, 0666);
+//    file1.get();
+    if (!body.empty()){
+//        len = 64000;
+//        len = body.length() > len ? len : body.length();
+        i = write(fdIn, body.c_str(), body.length());
+//        body.erase(0, len);
     }
+    close(fdIn);
     return *this;
 }
 
-Executor &Executor::inputBody() {
-    char buf[5];
-    bzero(buf, 5);
+Executor &Executor::outputBody() {
+    char *buf = new char[1048577];
+    bzero(buf, 1048577);
     int len = 0;
-    while ((len = read(fdOut[0], buf, 4)) > 0) {
+    body.clear();
+    fdOut = open("cgi_file_output.txt", O_RDWR);
+    while ((len = read(fdOut, buf, 1048576)) > 0) {
         buf[len] = '\0';
         body += buf;
     }
+    close(fdOut);
     return *this;
 }
 
 void Executor::pipeFd() {
-    pipe(fdIn);
-    pipe(fdOut);
+//    pipe(fdIn);
+//    pipe(fdOut);
 }
 
 const std::string &Executor::getBody() const {

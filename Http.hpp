@@ -19,7 +19,6 @@ private:
 	int _error_flag;
 	bool _big_changus;
 	bool _count_body;
-	bool _put;
 	size_t size_of_body;
 public:
 	bool getBigChangus() const;
@@ -70,10 +69,6 @@ public:
 
 	void setResponse(const std::vector<std::string> &response);
 	void clear();
-
-	bool isPut() const;
-
-	void setPut(bool put);
 };
 
 
