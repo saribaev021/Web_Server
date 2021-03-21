@@ -17,7 +17,7 @@ void Socket::listen_socket() {
 		throw Socket::SocketError();
 	}
 	_sock_addr.sin_family = AF_INET;
-	if ((_sock_addr.sin_addr.s_addr = inet_addr(_addres.c_str())) == -1 && _addres != "255.255.255.255"){
+	if ((_sock_addr.sin_addr.s_addr = inet_addr(_addres.c_str())) == INADDR_NONE && _addres != "255.255.255.255"){
 		throw Socket::BadAddress();
 	}
 	_sock_addr.sin_port = static_cast<unsigned short>((atoi(_port.c_str()) << 8) | (atoi(_port.c_str()) >> 8));
@@ -39,7 +39,7 @@ void Socket::connect_socket() {
 	if ((_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		throw Socket::SocketError();
 	_sock_addr.sin_family = AF_INET;
-	if ((_sock_addr.sin_addr.s_addr = inet_addr(_addres.c_str())) == -1 && _addres != "255.255.255.255"){
+	if ((_sock_addr.sin_addr.s_addr = inet_addr(_addres.c_str())) == INADDR_NONE && _addres != "255.255.255.255"){
 		throw Socket::BadAddress();
 	}
 	_sock_addr.sin_port = static_cast<unsigned short>((atoi(_port.c_str()) << 8) | (atoi(_port.c_str()) >> 8));

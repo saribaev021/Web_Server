@@ -3,7 +3,6 @@ SRCS = ClassParser.cpp client.cpp Http.cpp parser_check.cpp parser_errors.cpp pa
       parser_utils.cpp parser_mime_types.cpp ClassGenErrorPage.cpp big_changus.cpp Server.cpp Socket.cpp main.cpp HttpHeaders.cpp \
        RequestParser.cpp
 OBJ = $(SRCS:.cpp=.o)
-#-Wall -Wextra -Werror
 CXXFLAGS = -MMD -Wall -Wextra -Werror --std=c++98
 CXX = clang++
 INCLUDES = ./

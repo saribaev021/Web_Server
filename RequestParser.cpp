@@ -108,7 +108,6 @@ bool RequestParser::_parser_uri() {
 	std::string delimetr = "http://";
 	std::string uri = _start_line["uri"];
 	std::string host;
-	size_t pos;
 	if (_findi( uri, delimetr, delimetr.length()) != std::string::npos) {
 		uri.erase(0, delimetr.length());
 		size_t i = 0;

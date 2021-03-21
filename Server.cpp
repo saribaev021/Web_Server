@@ -5,7 +5,7 @@
 #include "Server.hpp"
 #include "cgi/Request.hpp"
 
-Server::Server(const t_server_config_data &config) : _gen_page(config.error_page), _config(config), _client(), _generate_headers(config.mime_map){
+Server::Server(const t_server_config_data &config) :  _generate_headers(config.mime_map),  _gen_page(config.error_page), _config(config), _client(){
 	_socket.setAddres(config.ip);
 	_socket.setPort(config.port);
 	try {

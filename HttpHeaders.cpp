@@ -17,7 +17,7 @@ HttpHeaders::HttpHeaders(const std::map<std::string, std::string> &mimeTypes) :_
 	std::string s2("Continue\nSwitching Protocol\nProcessing\nEarly Hints\nOK\nCreated\nAccepted\nNon-Authoritative Information\nNo Content\nReset Content\nPartial Content\nMultiple Choice\nMoved Permanently\nFound\nSee Other\nNot Modified\nUse Proxy\nSwitch Proxy\nTemporary Redirect\nPermanent Redirect\nBad Request\nUnauthorized\nPayment Required\nForbidden\nNot Found\nMethod Not Allowed\nNot Acceptable\nProxy Authentication Required\nRequest Timeout\nConflict\nGone\nLength Required\nPrecondition Failed\nRequest Entity Too Large\nRequest-URI Too Long\nUnsupported Media Type\nRequested Range Not Satisfiable\nExpectation Failed\nInternal Server Error\nNot Implemented\nBad Gateway\nService Unavailable\nGateway Timeout\nHTTP Version Not Supported\n");
 	std::vector<std::string> v1 = ft_split_string_to_vector(s1, ' ');
 	std::vector<std::string> v2 = ft_split_string_to_vector(s2, '\n');
-	for (int i = 0; i < v2.size(); i++)
+	for (size_t i = 0; i < v2.size(); i++)
 	{
 		v2[i] = "HTTP/1.1 " + v1[i] + " " + v2[i] + "\r\n";
 		_status.insert(std::pair<std::string, std::string>(v1[i], v2[i]));
