@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/12 13:20:40 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/12 13:25:22 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 15:59:17 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ std::map<std::string, std::string> gen_mime()
 	std::vector<std::string> v1 = ft_split_string_to_vector(s1, ' ');
 	std::vector<std::string> v2 = ft_split_string_to_vector(s2, ' ');
 	std::map<std::string, std::string> m;
-	for (int i = 0; i < v1.size(); i++)
+	for (size_t i = 0; i < v1.size(); i++)
 	{
 		m.insert(std::pair<std::string, std::string>(v1[i], v2[i]));
 	}

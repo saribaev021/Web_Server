@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 18:32:18 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 17:50:27 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 15:59:01 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static bool pars_check_ip_sim(std::string ip)
 }
 void	pars_check_ip(std::string ip)
 {
-	int  i = 0;
+	size_t  i = 0;
 	std::string num_str;
 	if (ip.length() > 16 || pars_check_ip_sim(ip))
 		ft_exit(IP_ERROR);
@@ -62,7 +62,7 @@ void	pars_check_port(std::string port)
 void  double_sl(std::string root)
 {
 	int count = 0;
-	for (int i = 0; i < root.length(); i++)
+	for (size_t i = 0; i < root.length(); i++)
 	{
 		if (count != 1)
 			count = 0;
@@ -137,7 +137,7 @@ void	pars_check_cgi(std::vector<std::string> &path, std::vector<std::string> ext
 {
 	if (path.size() != extensions.size())
 		ft_exit(PATH_EXTEN);
-	for (int i = 0; i < extensions.size(); i++)
+	for (size_t i = 0; i < extensions.size(); i++)
 	{
 		if (extensions[i].length() < 2 || extensions[i][0] != '.')
 			ft_exit(EXTENTION_DOT);
@@ -229,11 +229,11 @@ void	pars_check_auth(s_locations &location)
 void	check_ip_port_unique(std::vector<s_server_config_data> data)
 {
 	std::vector<std::string> v;
-	for (int i = 0; i < data.size(); i++)
+	for (size_t i = 0; i < data.size(); i++)
 		v.push_back(data[i].ip + ":" + data[i].port);
-	for (int i = 0; i < v.size(); i++)
+	for (size_t i = 0; i < v.size(); i++)
 	{
-		for (int j = i + 1; j < v.size(); j++)
+		for (size_t j = i + 1; j < v.size(); j++)
 		{
 			if (v[i] == v[j])
 				ft_exit(UNICUE_IP);

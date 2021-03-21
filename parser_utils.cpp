@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/03 20:14:33 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/18 16:33:01 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 16:00:52 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ std::string		delete_comments(std::string line)
 
 int		found_block(std::string str, std::string::iterator i)
 {
-	int j;
+	size_t j;
 	j = 0;
 	while (j < str.size())
 	{
@@ -227,7 +227,7 @@ std::vector<std::string> ft_split_string_to_vector(std::string str, char ch)
 
 bool ft_isnumstring(std::string str)
 {
-	for (int i = 0; i < str.size(); i++)
+	for (size_t i = 0; i < str.size(); i++)
 	{
 		if (!isnumber(str[i]))
 			return false;

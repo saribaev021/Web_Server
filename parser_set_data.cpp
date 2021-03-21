@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_set_data.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fbarbera <login@student.21-school.ru>      +#+  +:+       +#+        */
+/*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/08 17:07:07 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/20 22:47:49 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 16:00:25 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ std::vector<std::string>	split_vector(std::string s, std::string type)
 	std::string str = my_substr(s.begin() + type.length(), s.end());
 	std::string new_str;
 	std::string::iterator i = str.begin();
-	int n;
 	while (i != str.end())
 	{
 		if (ft_spases_p(*i))
@@ -136,10 +135,10 @@ static std::vector<std::string>	set_all_method()
 static bool	check_method_pars(std::vector<std::string> method, std::vector<std::string> all_method)
 {
 	bool a;
-	for (int i = 0; i < method.size(); i++)
+	for (size_t i = 0; i < method.size(); i++)
 	{
 		a = false;
-		for (int j = 0; j < all_method.size(); j++)
+		for (size_t j = 0; j < all_method.size(); j++)
 			if (all_method[j] == method[i])
 				a = true;
 		if (a == false)
@@ -159,7 +158,7 @@ std::string set_loc(std::string s)
 std::map<int, std::string> set_error_page_map(std::vector<std::string> vector, std::string root)
 {
 	std::map<int, std::string> map;
-	for (int i = 0; i < vector.size(); i++)
+	for (size_t i = 0; i < vector.size(); i++)
 	{
 		std::vector<std::string> v = ft_split_string_to_vector(vector[i], ' ');
 		if (v.size() != 3 || !ft_isnumstring(v[1]))
@@ -189,7 +188,7 @@ static void iset_data(t_server_config_data &s)
 	s.port = set_port(copy);
 	s.server_name.push_back(s.ip);
 	s.all_method = set_all_method();
-	int j = 0;
+	size_t j = 0;
 	while (j < s.location.size())
 	{
 		s.location[j].location = set_loc(split_string(s.location[j].location, "location "));
@@ -230,7 +229,7 @@ t_server_config_data	pars_data_for_servers(std::string str)
 	t_server_config_data s;
 	std::string::iterator iterator;
 	s.location = split_locations(str);
-	int j = 0;
+	size_t j = 0;
 	while (j < s.location.size())
 	{
 		s.location[j].location = set_string_p(s.location[j].full_loc, "location ");

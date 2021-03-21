@@ -288,8 +288,8 @@ void RequestParser::parser(Http &http) {
 		_count_body = http.getCountBody();
 		_big_changus = http.getBigChangus();
 		size_of_body = http.getSizeOfBody();
-		_body = http.getBody();
 
+		_body = http.getBody();
 		_body_chunked();
 		http.setBuffer(_buffer);
 		http.setStatus(_status);
