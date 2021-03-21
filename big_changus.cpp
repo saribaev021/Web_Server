@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 19:15:48 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/21 14:32:24 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 15:06:15 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void RequestParser::_body_chunked() {
 			else
 			{
 				_status = "read_body_chunked";
-				_buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
+				_buffer = _buffer.substr(size_to_delete);
 				return;
 			}
 		}

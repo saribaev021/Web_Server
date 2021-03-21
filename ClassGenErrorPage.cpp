@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 20:07:20 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/13 19:32:43 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 16:10:27 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ ClassGenPage::~ClassGenPage()
 int ClassGenPage::count_dir(std::string str)
 {
 	int num = 0;
-	for (int i = 0; i < str.length(); i++)
+	for (size_t i = 0; i < str.length(); i++)
 		if (str[i] == '/')
 			num++;
 	return num;
@@ -77,7 +77,6 @@ std::string ClassGenPage::gen_auto_page(std::string path, std::string location)
 	std::string head = head1 + location + head2 + location + head3;
 	std::string tail = "</pre><hr></body></html>";
 	std::string body;
-	int fd;
 	DIR *dir;
 	struct dirent	*entry;
 	std::string full_path = path;
