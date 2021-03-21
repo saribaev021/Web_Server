@@ -1,6 +1,16 @@
 cmake-build-debug/
 CMakeLists.txt
 a.out
-client
+_client
 server
 test*.*
+request
+.idea/
+HEAD
+*.log
+test_merge
+.gitignore
+favicon.ico
+*.conf
+*.DS_Store
+*.sh

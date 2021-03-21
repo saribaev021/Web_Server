@@ -4,21 +4,16 @@
 
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
-#include <iostream>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+
+#include <fstream>
+#include "system_include.hpp"
 #include "Http.hpp"
 class Socket {
-private:
-	char buf[2048];
 public:
 	Socket();
 	Socket(const std::string &addres, const std::string &port);
 	void listen_socket();
-	int accept_socket();
+	int accept_socket(sockaddr_in*, socklen_t *);
 	void connect_socket();
 	const std::string &getAddres() const;
 	void setAddres(const std::string &addres);
@@ -28,9 +23,9 @@ public:
 
 	int getSock() const;
 
-	std::pair<std::string, bool> receive(int sock_fd, Http &host);
+	bool receive(int sock_fd, Http &host);
 
-	void response(int sock_fd, const std::string &val);
+	size_t response(int sock_fd, const std::string &val, size_t);
 
 	class BadAddress : public std::exception{
 	virtual const char * what() const throw();
