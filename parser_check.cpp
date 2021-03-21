@@ -20,7 +20,7 @@ void	pars_check_name(std::vector<std::string> server_name)
 
 static bool pars_check_ip_sim(std::string ip)
 {
-	for (int i = 0; i < ip.length(); i++)
+	for (size_t i = 0; i < ip.length(); i++)
 	{
 		if (ip[i] == '.' || isnumber(ip[i]))
 			continue;

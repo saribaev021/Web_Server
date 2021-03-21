@@ -10,7 +10,6 @@ class Client {
 private:
 	int _fd;
 	Http _http;
-	std::pair<bool, size_t>_mehtod_send;
 	RequestParser _parser_request;
 	std::string _remote_addr;
 	t_server_config_data _config;

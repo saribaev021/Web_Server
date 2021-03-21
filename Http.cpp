@@ -4,7 +4,7 @@
 
 #include "Http.hpp"
 
-Http::Http() : _status("read_header"), _body(), _buffer(), _length(READ_BUFFER), _headMap(), _start_line(), _error_flag(), _big_changus(false), _count_body(false), size_of_body(false){}
+Http::Http() : _status("read_header"), _body(), _headMap(),  _start_line(), _buffer(), _length(READ_BUFFER),_error_flag(), _big_changus(false), _count_body(false), size_of_body(false), i(0){}
 
 const std::string &Http::getStatus() const {
 	return _status;

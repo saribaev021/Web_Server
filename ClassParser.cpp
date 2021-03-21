@@ -186,7 +186,7 @@ unsigned long long set_size(std::string str)
 	std::string s = my_substr(str.begin() + 14, str.end());
 	s = ft_trim_spases(s);
 	unsigned long long i = strtoul(s.c_str(), NULL, 10);
-	int n = 0;
+	size_t n = 0;
 	while (isnumber(s[n]))
 		n++;
 	
@@ -224,7 +224,7 @@ unsigned long long set_size(std::string str)
 void	ClassParser::pars_data()
 {
 	std::vector<std::string> lines_for_server = split_servers();
-	int j = 0;
+	size_t j = 0;
 	while (j < lines_for_server.size())
 	{
 		this->data.push_back(pars_data_for_servers(lines_for_server[j]));
@@ -241,9 +241,8 @@ void	pars_check_max_body_size_loc(unsigned long &max_body_size, unsigned long se
 
 void ClassParser::set_default_values()
 {
-	int i = 0;
-	int j;
-	int k;
+	size_t i = 0;
+	size_t j;
 	
 	if (data.empty())
 		ft_exit(777);

@@ -71,21 +71,21 @@ size_t Socket::response(int sock_fd, const std::string &val, size_t size) {
 }
 bool  Socket::receive(int sock_fd, Http &http) {
 	char *buf = new char[http.getLength() + 1];
-	bzero(buf, http.getLength() + 1);
+//	bzero(buf, http.getLength() + 1);
 	std::string str = http.getBuffer();
 	int i = recv(sock_fd, buf, http.getLength(), 0);
-//	std::ofstream log("request.log", std::ios_base::app);
-//	log << buf;
-//	log.close();
 	if (i == 0){
 		delete[] buf;
 		return false;
-	}else {
+	}else if (i > 0){
+		buf[i] = '\0';
 		str += std::string(buf);
 		http.setBuffer(str);
 		delete[] buf;
 		return true;
 	}
+	delete [] buf;
+	return false;
 }
 Socket::Socket(const std::string &addres, const std::string &port) : _addres(addres), _port(port){
 	_size_sock_addr = sizeof (sockaddr_in);

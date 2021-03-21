@@ -112,10 +112,6 @@ void Server::_controller(Client &client, t_locations &locations, std::string &me
 		std::vector<std::string>response(2, "");
 		std::string header;
 		std::vector<std::string> ret = requestBody(client, _config, locations, method, locations.cgi_path[p.second]);
-
-//        for (std::vector<std::string>::iterator i = ret.begin(); i != ret.end() ; i++) {
-//            std::cerr<<"|"<<*i<<"|"<<std::endl;
-//        }
 		header = ret[1];
         header.insert(0, _generate_headers.get_status(ret[0]));
         header += _generate_headers.get_server();
@@ -168,23 +164,29 @@ void Server::response(int index_client) {
 	std::vector<std::string> response = http.getResponse();
 	std::string status;
 
-	size_t length = 500000;
+	size_t length = 1000000;
 	size_t index = 0;
-	std::cout << "RESPONSE"<<std::endl;
 	if (response[0].length()){
 		index = 0;
 		length = response[0].length() < length ? response[0].length() : length;
-		std::cout << response[index].substr(0, length);
 	}else if (response[1].length()){
 		index = 1;
 		length = response[1].length() < length ? response[1].length() : length;
 	}
-	length = _socket.response(_client[index_client].getFd(), response[index].substr(0, length), length);
+	length = _socket.response(_client[index_client].getFd(), response[index]
+						   , length);
 	response[index].erase(0, length);
 	http.setResponse(response);
 	if (response[0].empty() && response[1].empty()) {
+		std::map<std::string, std::string>::const_iterator it;
+		if ((it = http.getHeadMap().find("connection")) != http.getHeadMap().end() && it->second == "close"){
+			close_connect(index_client);
+			std::cout << "s"<<std::endl;
+			return;
+		}
 		http.setStatus("read_header");
 		http.clear();
+		http.i = 0;
 	}
 	_client[index_client].setHttp(http);
 }
@@ -193,7 +195,6 @@ void Server::response(int index_client) {
 void Server::_execute_methods(Client &client) {
 	Http http = client.getHttp();
 	std::pair<bool, std::pair<size_t, size_t> >p = std::make_pair(false, std::make_pair(http.getErrorFlag(), 0));
-	std::cout << "RESPONSE"<<std::endl;
 	if (http.getStatus() == "error"){
 		std::cerr<<""<<std::endl;
 	}
@@ -302,6 +303,7 @@ std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_re
 	std::string location2 = http.getStartLine().find("source")->second + "/";
 	std::map<std::string, std::string>m_start_line = http.getStartLine();
 
+
 	location.insert(0, _config.root);
 	location2 = location + location2;
 	std::pair<bool, size_t> p_method(false, 0);
@@ -340,7 +342,7 @@ std::pair<bool, std::pair<size_t, size_t> > Server::_checking_сorrectness_of_re
 		http.setStartLine(m_start_line);
 		return std::make_pair(true, std::make_pair(p_loc.second, p_method.second));
 	}
-	if (_config.max_body_size < http.getBody().length()){
+	if (_config.location[p_loc.second].max_body_size < http.getBody().length()){
 		http.setStartLine(m_start_line);
 		return std::make_pair(false, std::make_pair(p_loc.second, 413));
 	}

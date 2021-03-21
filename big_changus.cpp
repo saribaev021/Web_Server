@@ -116,9 +116,6 @@ void RequestParser::_body_chunked() {
 		}
 	}
 	_status = "read_body_chunked";
-	// size_t pos = size_to_delete;
 	_buffer = _buffer.substr(size_to_delete);
-	// _buffer = my_substr(_buffer.begin() + size_to_delete, _buffer.end());
-//	std::cout << size_of_body << std::endl;
 	return ;
 }

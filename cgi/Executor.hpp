@@ -80,8 +80,8 @@ Executor &Executor::putBody() {
 }
 
 Executor &Executor::outputBody() {
-    char *buf = new char[1048577];
-    bzero(buf, 1048577);
+    char *buf = new char[5048577];
+//    bzero(buf, 5048577);
     int len = 0;
     body.clear();
     fdOut = open("cgi_file_output.txt", O_RDWR);

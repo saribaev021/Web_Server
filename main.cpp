@@ -48,7 +48,6 @@ int main()  {
 			max_d = servers[i].getSocketServer();
 		}
 	}
-	int s = 0;
 	while (a){
 		fd_set readFds, writeFds;
 		FD_ZERO(&readFds);
@@ -70,29 +69,15 @@ int main()  {
 		time_out.tv_usec = 000000;
 		int res = select(max_d + 1, &readFds, &writeFds, nullptr, &time_out);
 		if (res == 0){
-//			for (size_t i = 0; i < servers.size(); ++i){
-//				for (size_t k = 0; k < servers[i].getClient().size(); ++k){
-//
-//					servers[i].close_connect(k);
-//				}
-//			}
+			std::cout << "continue"<<std::endl;
 			continue;
 		}
 		if (res < 0){
-			if (errno != EINTR) {
-				std::cerr << "error " <<res << std::endl;
-				std::cout << strerror(errno) << std::endl;
-			}
-			else
-			{
-				std::cout << "error signal"<<std::endl;
-				break;
-			}
 			continue;
 		}
 		for (size_t i = 0; i < servers.size(); ++i){
 			if (FD_ISSET(servers[i].getSocketServer(), &readFds)){
-				std::cout << "new connection"<<std::endl;
+//				std::cout << "new connection"<<std::endl;
 				servers[i].new_connection();
 			}
 		}
