@@ -16,10 +16,6 @@ public:
 
 	void setStatus(const std::string &status);
 
-	const std::string &getHead() const;
-
-	void setHead(const std::string &head);
-
 	const std::map<std::string, std::string> &getHeadMap() const;
 
 	void setHeadMap(const std::map<std::string, std::string> &headMap);
@@ -38,9 +34,6 @@ public:
 
 	void setErrorFlag(int errorFlag);
 
-	int getParserFlag() const;
-
-	void setParserFlag(int parserFlag);
 	RequestParser(const std::vector<std::string>&, const std::vector<std::string>&, int);
 	const std::string &getBody() const;
 	void clear();

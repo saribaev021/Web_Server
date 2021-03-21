@@ -99,12 +99,9 @@ CgiEnv &CgiEnv::createEnv() {
 std::string CgiEnv::getAuthType() {
     return std::string("AUTH_TYPE=" + locations.auth_data.AuthType);
 }
-
+//body lengh
 std::string CgiEnv::getContentLength() {
-    if (client.getHttp().getHeadMap().find("content-length") != client.getHttp().getHeadMap().end())
-        return std::string("CONTENT_LENGTH=" + client.getHttp().getHeadMap().find("content-length")->second);
-    else
-        return std::string("CONTENT_LENGTH=");
+    return std::string("CONTENT_LENGTH=" + std::to_string(client.getHttp().getBody().length()));
 }
 
 std::string CgiEnv::getContentType() {
@@ -155,14 +152,11 @@ std::string CgiEnv::getRequestMethod() {
 }
 
 std::string CgiEnv::getRequestUri() {
-    if (client.getHttp().getStartLine().find("uri") != client.getHttp().getStartLine().end())
-        return std::string("REQUEST_URI=" + client.getHttp().getStartLine().find("uri")->second);
-    else
-        return std::string("REQUEST_URI=");
+    return std::string("RЕQUEST_URI=" + client.getHttp().getStartLine().find("uri")->second);
 }
 
 std::string CgiEnv::getScriptName() {
-    return std::string("SCRIPT_NAME=" + client.getHttp().getStartLine().find("source")->second);
+    return std::string("SCRIPT_NAME=");
 }
 
 std::string CgiEnv::getServerName() {
@@ -202,7 +196,8 @@ const Client &CgiEnv::getClient() const {
 }
 
 std::string CgiEnv::getFileName() {
-    return std::string("SCRIPT_FILENAME=" + client.getHttp().getStartLine().find("source")->second);
+    return std::string("SCRIPT_FILENAME=");
+//    return std::string("SCRIPT_FILENAME=" + client.getHttp().getStartLine().find("source")->second);
 }
 
 #endif

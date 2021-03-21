@@ -4,7 +4,7 @@
 
 #include "Http.hpp"
 
-Http::Http() : _status("read_header"), _body(), _buffer(), _length(READ_BUFFER), _headMap(), _start_line(), _error_flag(), _big_changus(false), _count_body(false), size_of_body(false), _put(false){}
+Http::Http() : _status("read_header"), _body(), _headMap(),  _start_line(), _buffer(), _length(READ_BUFFER),_error_flag(), _big_changus(false), _count_body(false), size_of_body(false), i(0){}
 
 const std::string &Http::getStatus() const {
 	return _status;
@@ -72,12 +72,16 @@ void Http::setErrorFlag(int errorFlag) {
 }
 
 void Http::clear() {
+	_status = "read_header";
 	_headMap.clear();
+	size_of_body = 0;
 	_buffer.clear();
 	_body.clear();
 	response.clear();
 	_start_line.clear();
 	_error_flag = 0;
+	_big_changus = 0;
+	_count_body = 0;
 	_length = READ_BUFFER;
 }
 
@@ -103,14 +107,6 @@ void Http::setCountBody(bool countBody) {
 
 size_t Http::getSizeOfBody() const {
 	return size_of_body;
-}
-
-bool Http::isPut() const {
-	return _put;
-}
-
-void Http::setPut(bool put) {
-	_put = put;
 }
 
 void Http::setSizeOfBody(size_t sizeOfBody) {

@@ -4,6 +4,8 @@
 
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
+
+#include <fstream>
 #include "system_include.hpp"
 #include "Http.hpp"
 class Socket {
