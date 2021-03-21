@@ -6,6 +6,7 @@
 #define WEBSERVER_CGIENV_HPP
 
 #include <list>
+#include <utility>
 #include <unistd.h>
 #include "../Client.hpp"
 
@@ -17,8 +18,8 @@ private:
     std::list<std::string> env;
     t_server_config_data config;
 public:
-    CgiEnv(const Client &_client, t_locations _locations, std::string cgi_path, t_server_config_data config) :
-            client(_client), cgi_path(cgi_path), config(config), locations(_locations) {
+    CgiEnv(const Client &_client, t_locations &_locations, const std::string &cgi_path, t_server_config_data &config) :
+            client(_client), locations(_locations), cgi_path(cgi_path), config(config) {
     }
 
     const std::string &getCgiPath() const;
@@ -84,8 +85,6 @@ CgiEnv &CgiEnv::createEnv() {
     env.push_back(getRemoteUser());
     env.push_back(getRequestMethod());
     env.push_back(getRequestUri());
-    env.push_back(getScriptName());
-    env.push_back(getFileName());
     env.push_back(getServerName());
     env.push_back(getServerPort());
     env.push_back(getServerProtocol());
@@ -99,7 +98,7 @@ CgiEnv &CgiEnv::createEnv() {
 std::string CgiEnv::getAuthType() {
     return std::string("AUTH_TYPE=" + locations.auth_data.AuthType);
 }
-//body lengh
+
 std::string CgiEnv::getContentLength() {
     return std::string("CONTENT_LENGTH=" + std::to_string(client.getHttp().getBody().length()));
 }
@@ -112,7 +111,6 @@ std::string CgiEnv::getContentType() {
 }
 
 std::string CgiEnv::getGatewayInterface() {
-    /* Версия CGI/1.1 */
     return std::string("GATEWAY_INTERFACE=CGI/1.1");
 }
 
@@ -155,10 +153,6 @@ std::string CgiEnv::getRequestUri() {
     return std::string("RЕQUEST_URI=" + client.getHttp().getStartLine().find("uri")->second);
 }
 
-std::string CgiEnv::getScriptName() {
-    return std::string("SCRIPT_NAME=");
-}
-
 std::string CgiEnv::getServerName() {
     return std::string("SERVER_NAME=" + *(config.server_name.begin()));
 }
@@ -178,7 +172,7 @@ std::string CgiEnv::getServerSoftware() {
 char **CgiEnv::getEnvArray() {
     char **pString = (char **) malloc(sizeof(char **) * (getEnv().size() + 1));
     std::list<std::string>::const_iterator j = getEnv().begin();
-    int i = 0;
+    std::string::size_type i = 0;
     for (; i < getEnv().size(); ++i) {
         pString[i] = strdup(j->c_str());
         j++;
@@ -193,11 +187,6 @@ const std::string &CgiEnv::getCgiPath() const {
 
 const Client &CgiEnv::getClient() const {
     return client;
-}
-
-std::string CgiEnv::getFileName() {
-    return std::string("SCRIPT_FILENAME=");
-//    return std::string("SCRIPT_FILENAME=" + client.getHttp().getStartLine().find("source")->second);
 }
 
 #endif

@@ -24,6 +24,16 @@ public:
         launch[2] = NULL;
     }
 
+    ~Executor() {
+        free(launch[0]);
+        free(launch[1]);
+        free(launch);
+        for (int i = 0; arrayEnv[i]; ++i) {
+            free(arrayEnv[i]);
+        }
+        free(arrayEnv);
+    }
+
     char **getArrayEnv() const {
         return arrayEnv;
     }
@@ -33,8 +43,6 @@ public:
     Executor &putBody();
 
     Executor &outputBody();
-
-    void pipeFd();
 
     const std::string &getBody() const;
 
@@ -51,10 +59,9 @@ Executor &Executor::launcher() {
         fdOut = open("cgi_file_output.txt", O_CREAT | O_RDWR | O_TRUNC, 0666);
         dup2(fdOut, 1);
         chdir(_client.getHttp().getStartLine().find("change_location")->second.c_str());
-        std::cerr<<_client.getHttp().getStartLine().find("change_location")->second<<"|"<<std::endl;
-        std::cerr<<"|"<<getcwd(NULL, 0)<<std::endl;
+        std::cerr << "dir=\"" << _client.getHttp().getStartLine().find("change_location")->second << "\"" << std::endl;
+        std::cerr << "launch=\"" << getLaunch()[0] << " " << getLaunch()[1] << "\"" << std::endl;
         status = execve(getLaunch()[0], getLaunch(), getArrayEnv());
-        std::cerr<<"{"<<status<<"}"<<std::endl;
         exit(status);
     } else if (pid < 0)
         write(2, "Error Fork", 10);
@@ -64,16 +71,9 @@ Executor &Executor::launcher() {
 }
 
 Executor &Executor::putBody() {
-    int i = 0;
-//    int len = 64000;
-//    std::ifstream file1("qwe.txt");
     fdIn = open("cgi_file_input.txt", O_CREAT | O_RDWR | O_TRUNC, 0666);
-//    file1.get();
-    if (!body.empty()){
-//        len = 64000;
-//        len = body.length() > len ? len : body.length();
-        i = write(fdIn, body.c_str(), body.length());
-//        body.erase(0, len);
+    if (!body.empty()) {
+        write(fdIn, body.c_str(), body.length());
     }
     close(fdIn);
     return *this;
@@ -81,7 +81,6 @@ Executor &Executor::putBody() {
 
 Executor &Executor::outputBody() {
     char *buf = new char[5048577];
-//    bzero(buf, 5048577);
     int len = 0;
     body.clear();
     fdOut = open("cgi_file_output.txt", O_RDWR);
@@ -89,13 +88,9 @@ Executor &Executor::outputBody() {
         buf[len] = '\0';
         body += buf;
     }
+    delete[]buf;
     close(fdOut);
     return *this;
-}
-
-void Executor::pipeFd() {
-//    pipe(fdIn);
-//    pipe(fdOut);
 }
 
 const std::string &Executor::getBody() const {
@@ -106,5 +101,4 @@ char **Executor::getLaunch() const {
     return launch;
 }
 
-
-#endif //WEB_SERVER_EXECUTOR_HPP
+#endif

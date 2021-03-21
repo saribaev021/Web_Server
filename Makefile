@@ -3,7 +3,6 @@ SRCS = ClassParser.cpp client.cpp Http.cpp parser_check.cpp parser_errors.cpp pa
       parser_utils.cpp RequestParser.cpp Server.cpp Socket.cpp main.cpp HttpHeaders.cpp \
       parser_mime_types.cpp ClassGenErrorPage.cpp big_changus.cpp
 OBJ = $(SRCS:.cpp=.o)
-OBJ2 =
 #-Wall -Wextra -Werror
 CXXFLAGS = -MMD  --std=c++98
 CXX = clang++
@@ -21,3 +20,4 @@ clean:
 fclean: clean
 	/bin/rm -rf $(NAME)
 -include = $(OBJ:.o=.d)
+re: fclean all
