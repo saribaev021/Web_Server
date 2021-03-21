@@ -6,7 +6,7 @@
 /*   By: fbarbera <fbarbera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/18 19:15:48 by fbarbera          #+#    #+#             */
-/*   Updated: 2021/03/19 18:20:59 by fbarbera         ###   ########.fr       */
+/*   Updated: 2021/03/21 14:32:24 by fbarbera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void RequestParser::_body_chunked() {
 		{
 			if (size_of_body == 0)
 			{
+				
 				token+= *begin;
 				begin++;
 			}
